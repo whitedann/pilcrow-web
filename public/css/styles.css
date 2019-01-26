@@ -1,0 +1,53 @@
+.text-dark:hover {
+  color: #aaaaaa !important;
+}
+
+.bg-purp {
+  background-color: #8866F4;
+}
+
+.bg-light-purp {
+  background-color: #D9D0F6;
+}
+
+.bg-yellow {
+  background-color: #FFB219;
+}
+
+.quote {
+  font-size: 15px;
+}
+
+.avatar {
+  border-radius: 10px;
+  height: 30px;
+  width: 30px;
+  border: 1px solid black;
+}
+
+.thread-title {
+  font-size: 50px;
+}
+
+.thread {
+  background-color: #F6F4FE;
+  border-radius: 0px 10px 0px 10px;
+  width: 100%;
+  text-align: left;
+}
+
+.entriesCount {
+  color: grey;
+}
+
+.thread:hover {
+  background-color: #FFFF19;
+  border: 1px solid grey;
+}
+
+.threadsList {
+  border-radius: 0px 10px 0px 10px;
+  background-color: #D9D0F6;
+  font-family: Helvetica;
+  padding: 10px;
+}

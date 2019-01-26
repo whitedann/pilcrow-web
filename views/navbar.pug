@@ -1,0 +1,30 @@
+nav.navbar.navbar-expand-lg.bg-light.navbar-light
+  .container
+    if !currentUserId
+      a.navbar-brand(href='/').float-left
+        img(src="../static/pilcrowbrand.png" height="50")
+    else
+      a.nav-brand(href='/profile').float-left
+        img(src="../static/pilcrowbrand.png" height="50")
+    if !currentUserId
+      ul.navbar-nav
+        li.nav-item
+          .nav-link
+            h4.font-weight-light Have an account?
+        li.nav-item
+          a.nav-link(href="/login") 
+            h4.text-dark.font-weight-bold Sign In
+    else
+      ul.navbar-nav
+        li.nav-item
+          a.nav-link(href="/write") 
+            h4.text-dark.font-weight-light Write
+        li.nav-item.mr-3
+          a.nav-link(href="/threads") 
+            h4.text-dark.font-weight-light Discover
+        li.nav-item.border-left
+          a.nav-link(href="/profile")
+            img.avatar(src="../static/profile.jpeg").ml-3
+        li.nav-item.pl-0
+          a.nav-link(href="/profile") 
+            h4.text-dark.font-weight-light #{currentUserName}

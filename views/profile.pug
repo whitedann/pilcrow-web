@@ -1,0 +1,15 @@
+extends layout
+
+block content 
+  .container
+    .row.bg-light-purp.mx-5.rounded.py-5.my-5
+      .col-md-5
+        h1 #{currentUserName}
+      .col-md-7
+        a(href="/logout")
+          btn.btn.btn-warning.btn-block.btn-lg Logout
+        hr.bg-dark.my-5
+        btn.btn.btn-warning.btn-block.btn-lg Browse Threads
+        btn.btn.btn-warning.btn-block.btn-lg Create A Thread
+        btn.btn.btn-warning.btn-block.btn-lg View Past Threads
+  
