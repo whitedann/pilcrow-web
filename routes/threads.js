@@ -23,10 +23,10 @@ router.param("tID", function(req, res, next, id) {
 
 // GET /threads
 //Route for rendering threads page, requires logged in status.
-router.get('/', function(req, res, next) {
+router.get('/', mid.loggedIn, function(req, res, next) {
   Thread.find({}, null, {sort: {createdAt: -1}}, function(err, threads){
     if(err) return next(err);
-    return res.render('threads', {title: "Threads"})
+    return res.render('threads', {title: "Threads"});
   });
 });
 
@@ -39,19 +39,32 @@ router.get('/all.json', function(req, res, next) {
   });
 });
 
+// GET /threads/open.json
+//Route that returns json of all open threads.
 router.get('/open.json', function(req, res, next) {
-  Thread.find({entryCount: {$lt : 11}}, function(err, threads){
+  Thread.find({entryCount: {$lt : 10}}, function(err, threads){
+    if(err) return next(err);
+    res.json(threads);
+  });
+});
+
+// GET /threads/closed.json
+//Route that returns json of all closed threads.
+router.get('/closed.json', function(req, res, next) {
+  Thread.find({entryCount: {$gt : 9}}, function(err, threads){
     if(err) return next(err);
     res.json(threads);
   });
 });
 
 // POST /threads
-// Route for creating a thread.
+// Route for creating a new thread.
 router.post('/', function(req, res, next) {
   const thread = new Thread(req.body);
   const firstEntry = new Entry();
-  firstEntry.entry = "NULL";
+  //When a new thread is created, it is initialized with a single empty entry
+  //The purpose of this is to prevent there from eer being a thread with 0 entries
+  firstEntry.entry = "";
   thread.entries.push(firstEntry);
   thread.save(function(err, question) {
     if(err) return next(err);
@@ -74,7 +87,7 @@ router.get('/:tID', function(req, res) {
       });
       mergedString = mergedString.reverse();
       mergedString = mergedString.join(" ");
-      res.render('test', {title: id, completeString: mergedString});
+      res.render('threadSubmission', {title: id, completeString: mergedString});
     }
   });
 });
@@ -95,6 +108,7 @@ router.post('/:tID', mid.loggedIn, function(req, res, next) {
   //Create Entry
   let entry = new Entry();
   entry.entry = req.body.entry;
+  entry.parentID = req.params.tID;
 
   //Add Entry to user object.
   User.findById(req.session.userId)
@@ -131,15 +145,6 @@ router.delete('/:tID', mid.loggedIn, function(req, res, next) {
     res.status(201);
     res.json(result);
   });
-});
-
-// PUT /threads/:tID/:sID
-// Route for editing a word added to a thread.
-router.put('/:tID/:sID', function(req, res) {
-  req.entry.update(req.body, function(err, result) {
-    if(err) return next(err);
-    res.json(result);
-  })
 });
 
 // POST /threads/:tID/:sID/vote-up

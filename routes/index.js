@@ -8,10 +8,6 @@ router.get('/', function(req, res){
   return res.render('index', {title: 'Home'});
 });
 
-router.get('/test', function(req, res) {
-  return res.render('test', {title: 'Test'});
-});
-
 // GET /write
 // Routes to random thread
 router.get('/write', function(req, res, next) {
@@ -26,6 +22,8 @@ router.get('/write', function(req, res, next) {
   });
 });
 
+//GET /Profile
+//Routes to profile page of current user
 router.get('/profile', mid.loggedIn, function(req, res, next) {
   if(!req.session.userId) {
     const err = new Error('You must login to view this page.');
@@ -39,6 +37,26 @@ router.get('/profile', mid.loggedIn, function(req, res, next) {
           return next(error);
         } else {
           return res.render('profile', {title: 'Profile', name: user.username});
+        }
+      });
+});
+
+
+//GET /profile.json
+//Routes to json data of current User
+router.get('/profile.json', mid.loggedIn, function(req, res, next) {
+  if(!req.session.userId) {
+    const err = new Error('You must login to view this page.');
+    //403 error code: forbidden
+    err.status = 403;
+    return next(err);
+  }
+  User.findById(req.session.userId)
+      .exec(function(error, user) {
+        if(error) {
+          return next(error);
+        } else {
+          return res.json(user);
         }
       });
 });

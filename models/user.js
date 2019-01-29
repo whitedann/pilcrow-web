@@ -37,11 +37,13 @@ UserSchema.statics.authenticate = function(email, password, callback) {
     //password = string from the form
     //user.password = hashed password in database
     //callback function which returns error if something goes wrong or
-    //                                result, a boolean for whether the passwords match
+    //result, a boolean for whether the passwords match
     bcrypt.compare(password, user.password, function(error, result){
       if(result === true){
         return callback(null, user);
       } else {
+        console.log(password);
+        console.log(user.password);
         return callback();
       }
     });
@@ -50,14 +52,19 @@ UserSchema.statics.authenticate = function(email, password, callback) {
 
 //PRESAVE HOOK: hash password before saving to database
 UserSchema.pre('save', function(next) {
-  const user = this;
-  bcrypt.hash(user.password, 10, function(err, hash) {
-    if(err){
-      return next(err);
-    }
-    user.password = hash;
+  //this prvents the password from rehash every time user is updated.
+  if(this.isModified('password')){
+    var user = this;
+    bcrypt.hash(user.password, 10, function(err, hash) {
+      if(err){
+        return next(err);
+      }
+      user.password = hash;
+      next();
+    });
+  } else{
     next();
-  });
+  }
 });
 
 const User = mongoose.model('User', UserSchema);

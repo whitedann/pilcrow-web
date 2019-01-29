@@ -1,17 +1,18 @@
 extends layout
 
 block content
-  .jumbotron.bg-warning.text-center.mx-5.my-4
+  .jumbotron.bg-warning.text-center
     h1.display-4 Write with Pilcrow!
     blockquote.blockquote
-      p.font-italic.quote.mb-0 When you need to innovate, you need collaboration.
+      p.font-italic.quote.mb-1 When you need to innovate, you need collaboration.
       footer.mt-0.blockquote-footer Marissa Mayer
-    p.lead.mt-5.mx-5 Pilcrow is a simple collaborative writing app. Write a sentence and submit it to a thread. After one hundred contributions, the thread closes. 
-    p.lead.mt-5.mx-5 The only catch? You can only see the most recently added sentence to the thread. Once a thread closes, you'll be able to read the whole thread. What will it say? Will it be a magical story of wizards and hobbits? A recipe for lemon blueberry pound cake? A dramtic retelling of the dead sea scrolls? Probably just nonsense. 
-    p.lead.mt-5.mx-5 Register below and participate. 
+    p.lead.my-5 Pilcrow is a simple collaborative writing app.
     a(href="/register")
-      btn.btn.btn-lg.btn-outline-dark.mt-5 Get Started Writing! 
+      btn.btn.btn-lg.btn-dark.mt-5 Get Started Writing 
     p.mt-2.font-italic (It's free!)
+  .bg-purp.text-center
+    p.lead.mt-5.mx-5 Write a sentence and submit it to a thread. After one hundred contributions, the thread closes. 
+    p.lead.mt-5.mx-5 The only catch? You can only see the most recently added sentence to the thread. Once a thread closes, you'll be able to read the whole thread. What will it say? Will it be a magical story of wizards and hobbits? A recipe for lemon blueberry pound cake? A dramtic retelling of the dead sea scrolls? Probably just nonsense. 
   .bg-purp.text-center.py-5
     hr.mt-5
     h5.pt-5 Choose between two different types of writing.
@@ -19,3 +20,4 @@ block content
     p Each turn, add up to 200 characters to a thread.
     h3.pt-5 Bullet
     p Each turn, add a single word to a thread.
+    p.footer A little project by Daniel White

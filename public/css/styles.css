@@ -19,16 +19,28 @@
 }
 
 .avatar {
-  border-radius: 10px;
   height: 30px;
   width: 30px;
   border: 1px solid black;
+  border-radius: 10px;
 }
 
 .thread-title {
   font-size: 50px;
 }
 
+.footer {
+  font-size: 13px;
+  margin-top: 200px;
+}
+
+.menu {
+  border-radius: 0px 10px 0px 10px;
+  background-color: #D9D0F6;
+}
+.menu-divider {
+  border: 1px solid grey;
+}
 .thread {
   background-color: #F6F4FE;
   border-radius: 0px 10px 0px 10px;

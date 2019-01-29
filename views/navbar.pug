@@ -7,13 +7,12 @@ nav.navbar.navbar-expand-lg.bg-light.navbar-light
       a.nav-brand(href='/profile').float-left
         img(src="../static/pilcrowbrand.png" height="50")
     if !currentUserId
-      ul.navbar-nav
-        li.nav-item
-          .nav-link
-            h4.font-weight-light Have an account?
-        li.nav-item
-          a.nav-link(href="/login") 
-            h4.text-dark.font-weight-bold Sign In
+      .nav-right
+        ul.navbar-nav
+          li.nav-item
+            span.btn.btn-lg.text-muted Already have an account?
+          li.nav-item
+            a(href="/login").btn.btn-outline-dark.btn-lg.font-weight-bold Sign In
     else
       ul.navbar-nav
         li.nav-item

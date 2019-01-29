@@ -11,6 +11,7 @@ const sortEntries = function(a, b){
 
 const EntrySchema = new mongoose.Schema({
   entry: String,
+  parentID: String,
   createdAt: {type: Date, default: Date.now},
 });
 
