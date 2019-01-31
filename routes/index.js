@@ -80,7 +80,7 @@ router.post('/login', function(req, res, next) {
         //creates a new session
         req.session.userId = user._id;
         req.session.username = user.username;
-        return res.redirect('/profile');
+        return res.redirect('/threads');
       }
     });
   } else {
@@ -138,7 +138,7 @@ router.post('/register', function(req, res, next){
       } else {
         req.session.userId = user._id;
         req.session.username = user.username;
-        return res.redirect('/profile');
+        return res.redirect('/threads');
       }
     });
 

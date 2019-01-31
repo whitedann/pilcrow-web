@@ -20,12 +20,16 @@ var ThreadsWidget = function (_Component) {
       threads: [],
       title: "Loading...",
       user: "Waiting...",
-      submissions: []
+      submissions: [],
+      leftColTitle: "",
+      rightColTitle: "",
+      createPostClick: false
       //Bind the functions to the instance of this component.
     };_this.generateClosedThreads = _this.generateClosedThreads.bind(_this);
     _this.generateOpenThreads = _this.generateOpenThreads.bind(_this);
     _this.generateYourPastThreads = _this.generateYourPastThreads.bind(_this);
     _this.getCurrentUserInfo = _this.getCurrentUserInfo.bind(_this);
+    _this.createNewThreadForm = _this.createNewThreadForm.bind(_this);
     return _this;
   }
 
@@ -51,7 +55,10 @@ var ThreadsWidget = function (_Component) {
         _this3.setState({
           submissions: response.data.contributions,
           threads: [],
-          title: "Your Threads"
+          title: "Your Threads",
+          leftColTitle: "Entry",
+          rightColTitle: "",
+          createPostClicked: false
         });
       }).catch(function (error) {
         console.log("error fetching user submissions");
@@ -70,7 +77,10 @@ var ThreadsWidget = function (_Component) {
         _this4.setState({
           threads: response.data,
           submissions: [],
-          title: "Closed Threads"
+          title: "Closed Threads",
+          leftColTitle: "Title",
+          rightColTitle: "Total Contributions",
+          createPostClick: false
         });
       }).catch(function (error) {
         console.log("error fetching completed threads", error);
@@ -89,10 +99,21 @@ var ThreadsWidget = function (_Component) {
         _this5.setState({
           threads: response.data,
           submissions: [],
-          title: "Open Threads"
+          title: "Open Threads",
+          leftColTitle: "Most Recent Entry",
+          rightColTitle: "Entry Count",
+          createPostClicked: false
         });
       }).catch(function (error) {
         console.log("error fetching completed threads", error);
+      });
+    }
+  }, {
+    key: "createNewThreadForm",
+    value: function createNewThreadForm() {
+      this.setState({
+        createPostClicked: true,
+        title: "Start a New Thread"
       });
     }
   }, {
@@ -111,12 +132,17 @@ var ThreadsWidget = function (_Component) {
           generateOpenThreads: this.generateOpenThreads,
           generateClosedThreads: this.generateClosedThreads,
           generateYourPastThreads: this.generateYourPastThreads,
+          createNewThreadForm: this.createNewThreadForm,
           user: this.state.user
         }),
-        React.createElement(ThreadsList, {
+        this.state.createPostClicked ? React.createElement(NewPostForm, {
+          title: this.state.title
+        }) : React.createElement(ThreadsList, {
           threads: this.state.threads,
           submissions: this.state.submissions,
-          title: this.state.title
+          title: this.state.title,
+          leftColTitle: this.state.leftColTitle,
+          rightColTitle: this.state.rightColTitle
         })
       );
     }
@@ -125,14 +151,177 @@ var ThreadsWidget = function (_Component) {
   return ThreadsWidget;
 }(Component);
 
+var NewPostForm = function (_Component2) {
+  _inherits(NewPostForm, _Component2);
+
+  function NewPostForm() {
+    _classCallCheck(this, NewPostForm);
+
+    var _this6 = _possibleConstructorReturn(this, (NewPostForm.__proto__ || Object.getPrototypeOf(NewPostForm)).call(this));
+
+    _this6.state = {
+      maxChars: 10,
+      maxEntries: 10,
+      currentChars: 0,
+      currentString: "",
+      title: ""
+    };
+    _this6.makeAndRouteToNewThread = _this6.makeAndRouteToNewThread.bind(_this6);
+    _this6.handleChange = _this6.handleChange.bind(_this6);
+    _this6.handleTextAreaChange = _this6.handleTextAreaChange.bind(_this6);
+    return _this6;
+  }
+
+  _createClass(NewPostForm, [{
+    key: "makeAndRouteToNewThread",
+    value: function makeAndRouteToNewThread() {
+      var my = this;
+      axios.post('http://localhost:3000/threads/', {
+        content: my.state.currentString,
+        maxEntries: my.state.maxEntries,
+        title: my.state.title
+      }).then(function (response) {
+        console.log(response);
+      }).catch(function (error) {
+        console.log(error);
+      });
+    }
+  }, {
+    key: "handleChange",
+    value: function handleChange(event) {
+      this.setState({ maxChars: event.target.value });
+    }
+  }, {
+    key: "handleTextAreaChange",
+    value: function handleTextAreaChange(event) {
+      this.setState({
+        currentChars: event.target.value.length,
+        currentString: event.target.value
+      });
+    }
+  }, {
+    key: "render",
+    value: function render() {
+      return React.createElement(
+        "div",
+        { className: "container col-md-9" },
+        React.createElement(PageHeading, { heading: this.props.title }),
+        React.createElement(
+          "div",
+          { className: "bg-light-purp p-3" },
+          React.createElement(
+            "form",
+            null,
+            React.createElement(
+              "div",
+              { className: "form-row" },
+              React.createElement(
+                "div",
+                { className: "form-group col-md-3" },
+                React.createElement(
+                  "label",
+                  null,
+                  "Max characters per entry"
+                ),
+                React.createElement(
+                  "select",
+                  { value: this.state.maxChars, onChange: this.handleChange, className: "form-control" },
+                  React.createElement(
+                    "option",
+                    { value: "10" },
+                    "10"
+                  ),
+                  React.createElement(
+                    "option",
+                    { value: "20" },
+                    "20"
+                  )
+                )
+              ),
+              React.createElement(
+                "div",
+                { className: "form-group col-md-3" },
+                React.createElement(
+                  "label",
+                  null,
+                  "Entry Limit"
+                ),
+                React.createElement(
+                  "select",
+                  { className: "form-control" },
+                  React.createElement(
+                    "option",
+                    null,
+                    "10"
+                  ),
+                  React.createElement(
+                    "option",
+                    null,
+                    "100"
+                  )
+                )
+              ),
+              React.createElement("div", { className: "col-md-6" })
+            ),
+            React.createElement(
+              "div",
+              { className: "form-group" },
+              React.createElement(
+                "label",
+                { className: "aventir" },
+                "Give the thread a title:"
+              ),
+              React.createElement("input", { className: "form-control newThreadInput" })
+            ),
+            React.createElement(
+              "div",
+              { className: "form-group" },
+              React.createElement(
+                "label",
+                { className: "mt-4" },
+                "Write the first entry:"
+              ),
+              React.createElement("textarea", { className: "form-control", rows: "6", maxLength: this.state.maxChars, onChange: this.handleTextAreaChange })
+            ),
+            React.createElement(
+              "p",
+              null,
+              this.state.currentChars,
+              "/",
+              this.state.maxChars
+            ),
+            React.createElement(
+              "button",
+              { className: "btn btn-lg btn-dark text-center", onClick: this.makeAndRouteToNewThread },
+              "Create"
+            ),
+            React.createElement(
+              "p",
+              { className: "mt-1 font-italic" },
+              "Note: You can only create one thread per day "
+            )
+          )
+        )
+      );
+    }
+  }]);
+
+  return NewPostForm;
+}(Component);
+
 var SideBar = function SideBar(props) {
   return React.createElement(
     "div",
-    { className: "col-md-3 menu py-3" },
+    { className: "col-md-3 menu py-3 avenir" },
     React.createElement(
-      "h5",
+      "h3",
       null,
       props.user
+    ),
+    React.createElement(
+      "p",
+      null,
+      "Score: 9"
     ),
     React.createElement("hr", { className: "menu-divider mt-0" }),
     React.createElement(
@@ -147,19 +336,19 @@ var SideBar = function SideBar(props) {
     ),
     React.createElement(
       "button",
-      { className: "btn btn-block btn-warning py-y", onClick: props.generateYourPastThreads },
+      { className: "btn btn-block btn-warning py-2", onClick: props.generateYourPastThreads },
       "Your Contributions"
     ),
     React.createElement(
       "button",
-      { className: "btn btn-block btn-success py-3 mt-5" },
+      { className: "btn btn-block btn-success py-3 mt-5", onClick: props.createNewThreadForm },
       "Start A New Thread"
     )
   );
 };
 
-var ThreadListing = function (_React$Component) {
-  _inherits(ThreadListing, _React$Component);
+var ThreadListing = function (_Component3) {
+  _inherits(ThreadListing, _Component3);
 
   function ThreadListing() {
     _classCallCheck(this, ThreadListing);
@@ -192,7 +381,7 @@ var ThreadListing = function (_React$Component) {
   }]);
 
   return ThreadListing;
-}(React.Component);
+}(Component);
 
 var SubmissionListing = function SubmissionListing(props) {
   return React.createElement(
@@ -211,19 +400,19 @@ var SubmissionListing = function SubmissionListing(props) {
 };
 
 {/*Stateless*/}
-var ListHeading = function ListHeading() {
+var ListHeading = function ListHeading(props) {
   return React.createElement(
     "div",
     { className: "m-1" },
     React.createElement(
       "span",
       { className: "h5 font-weight-light" },
-      "Last Contribution"
+      props.leftColTitle
     ),
     React.createElement(
       "span",
       { className: "h5 float-right font-weight-light" },
-      "Entry Count"
+      props.rightColTitle
     )
   );
 };
@@ -232,7 +421,7 @@ var ListHeading = function ListHeading() {
 var PageHeading = function PageHeading(props) {
   return React.createElement(
     "div",
-    { className: "font-weight-bold thread-title" },
+    { className: "font-weight-bold thread-title avenir" },
     props.heading
   );
 };
@@ -245,7 +434,10 @@ var ThreadsList = function ThreadsList(props) {
     React.createElement(
       "div",
       { className: "threadsList" },
-      React.createElement(ListHeading, null),
+      React.createElement(ListHeading, {
+        leftColTitle: props.leftColTitle,
+        rightColTitle: props.rightColTitle
+      }),
       props.submissions.map(function (submission) {
         return React.createElement(SubmissionListing, {
           key: submission._id.toString(),

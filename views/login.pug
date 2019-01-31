@@ -3,16 +3,21 @@ extends layout
 block content 
   .container
     .row
-      .col-md-4
-        h1 Log In
-        form(method="POST", action="/login")
+      .col-md-3
+      .col-md-6.p-5.my-4.bg-light-purp.rounded
+        h1.mb-4.text-center.avenir.font-weight-bold Log in
+        p.text-center.forms Not Registered?   
+          a.orange(href="/register") Register an account!
+        form.text-center(method="POST", action="/login")
           .form-group
-            label(for="email") Email
-            input.form-control(type='text', id='email', placeholder='email', name='email')
+            label.inp(for="email")
+              input.input(type='text', id='email', placeholder=" ", name='email')
+              span.label Email Address
+              span.border 
           .form-group
-            label(for='password') Password
-            input.form-control(type='password', id='password', placeholder='password', name='password')
-          button.btn.btn-secondary(type='submit') Log In
-        h5.mt-3 Not Registered?
-        a.text-dark(href="/register") Register an account!
-      .col-md-8
+            label.inp(for='password')
+              input.input(type='password', id='password', placeholder=' ', name='password')
+              span.label Password
+              span.border
+          button.btn.btn-dark.btn-lg.btn-block.p-4.mt-5.avenir(type='submit') Log In
+      .col-md-3

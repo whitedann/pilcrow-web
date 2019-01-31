@@ -64,7 +64,7 @@ router.post('/', function(req, res, next) {
   const firstEntry = new Entry();
   //When a new thread is created, it is initialized with a single empty entry
   //The purpose of this is to prevent there from eer being a thread with 0 entries
-  firstEntry.entry = "";
+  firstEntry.entry = req.body.content;
   thread.entries.push(firstEntry);
   thread.save(function(err, question) {
     if(err) return next(err);

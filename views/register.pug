@@ -1,23 +1,32 @@
 extends layout
 
 block content
-  .row
-    .col-md-4
-    .col-md-4
-      h3.text-center Sign Up
-      //register form
-      form(method='POST', action="/register")
-        .form-group
-          label(for='username') Username:
-          input#username.form-control(type='text', placeholder='How do you want to be called?' name='username')
-        .form-group
-          label(for='email') Email:
-          input#email.form-control(type='email', placeholder='name@email.com' name='email')
-        .form-group
-          label(for='pw') Password:
-          input#pw.form-control(type='password' name='password')
-        .form-group
-          label(for='pw2') Confirm Password:
-          input#pw2.form-control(type='password' name='confirmPassword')
-        button.btn.btn-secondary(type='submit') Sign up
-    .col-md-4
+  .container
+    .row
+      .col-md-3
+      .col-md-6.p-5.my-4.bg-light-purp.login-field.rounded
+        h1.mb-4.text-center.forms.font-weight-bold Sign Up
+        //register form
+        form(method='POST', action="/register")
+          .form-group
+            label.inp(for='username')
+              input#username(type='text', placeholder=' ', name='username')
+              span.label Username
+              span.border 
+          .form-group
+            label.inp(for='email')
+              input#email(type='email', placeholder=' ', name='email')
+              span.label Email
+              span.border 
+          .form-group
+            label.inp(for='pw')
+              input#pw(type='password' placeholder=' ', name='password')
+              span.label Password
+              span.border 
+          .form-group
+            label.inp(for='pw2')
+              input#pw2(type='password' placeholder=" ", name='confirmPassword')
+              span.label Confirm Password
+              span.border 
+          button.btn.btn-dark.btn-lg.btn-block.p-2.mt-5(type='submit') Sign up
+      .col-md-3
