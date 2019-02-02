@@ -10,22 +10,22 @@ block content
         form(method='POST', action="/register")
           .form-group
             label.inp(for='username')
-              input#username(type='text', placeholder=' ', name='username')
+              input.input#username(type='text', placeholder=' ', name='username')
               span.label Username
               span.border 
           .form-group
             label.inp(for='email')
-              input#email(type='email', placeholder=' ', name='email')
+              input.input#email(type='email', placeholder=' ', name='email')
               span.label Email
               span.border 
           .form-group
             label.inp(for='pw')
-              input#pw(type='password' placeholder=' ', name='password')
+              input.input#pw(type='password' placeholder=' ', name='password')
               span.label Password
               span.border 
           .form-group
             label.inp(for='pw2')
-              input#pw2(type='password' placeholder=" ", name='confirmPassword')
+              input.input#pw2(type='password' placeholder=" ", name='confirmPassword')
               span.label Confirm Password
               span.border 
           button.btn.btn-dark.btn-lg.btn-block.p-2.mt-5(type='submit') Sign up

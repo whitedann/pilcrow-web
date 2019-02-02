@@ -130,6 +130,10 @@
   color: grey;
 }
 
+.rulesText {
+  font-size: 20px;
+}
+
 .thread:hover {
   background-color: #FFFF19;
   border: 1px solid grey;

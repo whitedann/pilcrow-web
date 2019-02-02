@@ -1,5 +1,7 @@
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
@@ -55,7 +57,7 @@ var ThreadsWidget = function (_Component) {
         _this3.setState({
           submissions: response.data.contributions,
           threads: [],
-          title: "Your Threads",
+          title: "Your Contributions",
           leftColTitle: "Entry",
           rightColTitle: "",
           createPostClicked: false
@@ -166,30 +168,45 @@ var NewPostForm = function (_Component2) {
       currentString: "",
       title: ""
     };
+
+    _this6.handleTitleChange = _this6.handleTitleChange.bind(_this6);
     _this6.makeAndRouteToNewThread = _this6.makeAndRouteToNewThread.bind(_this6);
-    _this6.handleChange = _this6.handleChange.bind(_this6);
+    _this6.handleMaxCharChange = _this6.handleMaxCharChange.bind(_this6);
     _this6.handleTextAreaChange = _this6.handleTextAreaChange.bind(_this6);
+    _this6.handleMaxEntriesChange = _this6.handleMaxEntriesChange.bind(_this6);
     return _this6;
   }
 
   _createClass(NewPostForm, [{
     key: "makeAndRouteToNewThread",
     value: function makeAndRouteToNewThread() {
+      //declare instance of this component to get around scoping issues of "this"
       var my = this;
-      axios.post('http://localhost:3000/threads/', {
+      axios.post('http://localhost:3000/threads/', _defineProperty({
         content: my.state.currentString,
         maxEntries: my.state.maxEntries,
-        title: my.state.title
-      }).then(function (response) {
+        title: my.state.title,
+        maxChars: my.state.maxChars
+      }, "maxEntries", my.state.maxEntries)).then(function (response) {
         console.log(response);
       }).catch(function (error) {
         console.log(error);
       });
     }
   }, {
-    key: "handleChange",
-    value: function handleChange(event) {
+    key: "handleTitleChange",
+    value: function handleTitleChange(event) {
+      this.setState({ title: event.target.value });
+    }
+  }, {
+    key: "handleMaxCharChange",
+    value: function handleMaxCharChange(event) {
       this.setState({ maxChars: event.target.value });
+    }
+  }, {
+    key: "handleMaxEntriesChange",
+    value: function handleMaxEntriesChange(event) {
+      this.setState({ maxEntries: event.target.value });
     }
   }, {
     key: "handleTextAreaChange",
@@ -225,7 +242,7 @@ var NewPostForm = function (_Component2) {
                 ),
                 React.createElement(
                   "select",
-                  { value: this.state.maxChars, onChange: this.handleChange, className: "form-control" },
+                  { value: this.state.maxChars, onChange: this.handleMaxCharChange, className: "form-control" },
                   React.createElement(
                     "option",
                     { value: "10" },
@@ -244,20 +261,20 @@ var NewPostForm = function (_Component2) {
                 React.createElement(
                   "label",
                   null,
-                  "Entry Limit"
+                  "Max characters per entry"
                 ),
                 React.createElement(
                   "select",
-                  { className: "form-control" },
+                  { value: this.state.maxEntries, onChange: this.handleMaxEntriesChange, className: "form-control" },
                   React.createElement(
                     "option",
-                    null,
-                    "10"
+                    { value: "100" },
+                    "100"
                   ),
                   React.createElement(
                     "option",
-                    null,
-                    "100"
+                    { value: "200" },
+                    "200"
                   )
                 )
               ),
@@ -271,7 +288,7 @@ var NewPostForm = function (_Component2) {
                 { className: "aventir" },
                 "Give the thread a title:"
               ),
-              React.createElement("input", { className: "form-control newThreadInput" })
+              React.createElement("input", { className: "form-control newThreadInput", onChange: this.handleTitleChange })
             ),
             React.createElement(
               "div",
@@ -457,4 +474,4 @@ var ThreadsList = function ThreadsList(props) {
   );
 };
 
-ReactDOM.render(React.createElement(ThreadsWidget, null), document.getElementById('reactEle'));
+ReactDOM.render(React.createElement(ThreadsWidget, null), document.getElementById('threadsPage'));

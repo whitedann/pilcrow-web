@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
-
 const Schema = mongoose.Schema;
+
 
 const sortEntries = function(a, b){
   // negative if a before b
@@ -12,6 +12,7 @@ const sortEntries = function(a, b){
 const EntrySchema = new mongoose.Schema({
   entry: String,
   parentID: String,
+  createdBy: String,
   createdAt: {type: Date, default: Date.now},
 });
 
@@ -19,7 +20,9 @@ const ThreadSchema = new mongoose.Schema({
       createdAt: {type: Date, default: Date.now},
       entries: [EntrySchema],
       entryCount: {type: Number, default: 0},
-      checkedOut: {type: Boolean, default: false}
+      checkedOut: {type: Boolean, default: false},
+      maxEntries: {type: Number, default: 0},
+      maxChars: {type: Number, default: 0}
 });
 
 ThreadSchema.statics.findRandomIncompleteThread = function(callback){

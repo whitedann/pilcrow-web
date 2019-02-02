@@ -62,18 +62,43 @@ router.get('/closed.json', function(req, res, next) {
 router.post('/', function(req, res, next) {
   const thread = new Thread(req.body);
   const firstEntry = new Entry();
+
+  //Add Entry to user's contributions.
+  User.findById(req.session.userId)
+      .exec(function(error, user) {
+        if(error) {
+          return next(error);
+        }
+        else {
+          user.contributions.push(firstEntry);
+          user.contributionsCount++;
+          user.save(function(err, user) {
+            if(err) return next(err);
+          });
+
+        }
+  });
+
   //When a new thread is created, it is initialized with a single empty entry
-  //The purpose of this is to prevent there from eer being a thread with 0 entries
+  //The purpose of this is to prevent there from there being a thread with 0 entries
   firstEntry.entry = req.body.content;
+  firstEntry.createdBy = req.session.username;
   thread.entries.push(firstEntry);
-  thread.save(function(err, question) {
+  thread.maxEntries = req.body.maxEntries;
+  thread.maxChars = req.body.maxChars;
+  thread.entryCount++;
+  thread.title = req.body.title;
+
+
+  thread.save(function(err, thread) {
     if(err) return next(err);
     res.status(201);
     res.json(thread);
   });
+
 });
 
-// GET /threads
+// GET /threads/:tID
 // Route for displaying a single thread. Requires logged in status.
 router.get('/:tID', function(req, res) {
   const id = req.params.tID;
@@ -87,7 +112,13 @@ router.get('/:tID', function(req, res) {
       });
       mergedString = mergedString.reverse();
       mergedString = mergedString.join(" ");
-      res.render('threadSubmission', {title: id, completeString: mergedString});
+      res.render('singleThread', {
+        title: id,
+        completeString: mergedString,
+        maxEntries: thread.maxEntries,
+        entryCount: thread.entryCount,
+        maxChars: thread.maxChars
+      });
     }
   });
 });
@@ -107,7 +138,8 @@ router.get('/:tID/data.json', function(req, res) {
 router.post('/:tID', mid.loggedIn, function(req, res, next) {
   //Create Entry
   let entry = new Entry();
-  entry.entry = req.body.entry;
+  entry.entry = req.body.content;
+  entry.createdBy = req.session.username;
   entry.parentID = req.params.tID;
 
   //Add Entry to user object.
@@ -117,6 +149,7 @@ router.post('/:tID', mid.loggedIn, function(req, res, next) {
           return next(error);
         }
         else {
+          entry.createdBy = user;
           user.contributions.push(entry);
           user.contributionsCount++;
           user.save(function(err, user) {

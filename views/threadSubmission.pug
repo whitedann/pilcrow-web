@@ -6,8 +6,10 @@ block content
       .col-md-6
         h1 The Story Title
         p #{completeString}
+        p #{entryCount}/#{maxEntries}
         form(method="POST")
           input.form-control(type='text', id='entry', placeholder='Type text here', name='entry')
           button.btn.btn-secondary.my-3(type="submit") Confirm
       .col-md-6
-        .bg-light #{title}
+        .bg-light-purp.rounded Thread ID: #{title}
+          p #{maxChars} characters allowed per entry

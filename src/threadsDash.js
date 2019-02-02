@@ -38,7 +38,7 @@ class ThreadsWidget extends Component {
         this.setState({
           submissions: response.data.contributions,
           threads: [],
-          title: "Your Threads",
+          title: "Your Contributions",
           leftColTitle: "Entry",
           rightColTitle: "",
           createPostClicked: false
@@ -141,17 +141,23 @@ class NewPostForm extends Component {
       currentString: "",
       title: ""
     };
+
+    this.handleTitleChange = this.handleTitleChange.bind(this);
     this.makeAndRouteToNewThread = this.makeAndRouteToNewThread.bind(this);
-    this.handleChange = this.handleChange.bind(this);
+    this.handleMaxCharChange = this.handleMaxCharChange.bind(this);
     this.handleTextAreaChange = this.handleTextAreaChange.bind(this);
+    this.handleMaxEntriesChange = this.handleMaxEntriesChange.bind(this);
   }
 
   makeAndRouteToNewThread(){
+    //declare instance of this component to get around scoping issues of "this"
     const my = this;
     axios.post('http://localhost:3000/threads/', {
       content: my.state.currentString,
       maxEntries: my.state.maxEntries,
-      title: my.state.title
+      title: my.state.title,
+      maxChars: my.state.maxChars,
+      maxEntries: my.state.maxEntries,
     })
       .then(response => {
           console.log(response);
@@ -161,9 +167,18 @@ class NewPostForm extends Component {
       });
   }
 
-  handleChange(event){
-    this.setState({maxChars : event.target.value})
+  handleTitleChange(event){
+    this.setState({title: event.target.value})
   }
+
+  handleMaxCharChange(event){
+    this.setState({maxChars : event.target.value});
+  }
+
+  handleMaxEntriesChange(event){
+    this.setState({maxEntries: event.target.value});
+  }
+
 
   handleTextAreaChange(event){
     this.setState({
@@ -181,33 +196,33 @@ class NewPostForm extends Component {
             <div className="form-row">
               <div className="form-group col-md-3">
                 <label>Max characters per entry</label>
-                <select value={this.state.maxChars} onChange={this.handleChange} className="form-control">
+                <select value={this.state.maxChars} onChange={this.handleMaxCharChange} className="form-control">
                   <option value="10">10</option>
                   <option value="20">20</option>
                 </select>
               </div>
               <div className="form-group col-md-3">
-                <label>Entry Limit</label>
-                <select className="form-control">
-                  <option>10</option>
-                  <option>100</option>
+                <label>Max characters per entry</label>
+                <select value={this.state.maxEntries} onChange={this.handleMaxEntriesChange} className="form-control">
+                  <option value="100">100</option>
+                  <option value="200">200</option>
                 </select>
               </div>
               <div className="col-md-6"></div>
             </div>
             <div className="form-group">
               <label className="aventir">Give the thread a title:</label>
-              <input className="form-control newThreadInput"></input>
+              <input className="form-control newThreadInput" onChange={this.handleTitleChange}></input>
             </div>
             <div className="form-group">
               <label className="mt-4">Write the first entry:</label>
               <textarea className="form-control" rows="6" maxLength={this.state.maxChars} onChange={this.handleTextAreaChange}></textarea>
             </div>
             <p>{this.state.currentChars}/{this.state.maxChars}</p>
-          <button className="btn btn-lg btn-dark text-center" onClick={this.makeAndRouteToNewThread}>
-            Create
-          </button>
-          <p className="mt-1 font-italic">Note: You can only create one thread per day </p>
+            <button className="btn btn-lg btn-dark text-center" onClick={this.makeAndRouteToNewThread}>
+              Create
+            </button>
+            <p className="mt-1 font-italic">Note: You can only create one thread per day </p>
           </form>
         </div>
       </div>
@@ -324,5 +339,5 @@ const ThreadsList = (props) => {
 
 ReactDOM.render(
   <ThreadsWidget />,
-  document.getElementById('reactEle')
+  document.getElementById('threadsPage')
 );
