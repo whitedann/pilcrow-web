@@ -6,9 +6,10 @@ class ThreadView extends Component {
     super()
     this.state = {
       title: "No Title",
-      threadID: "",
+      threadID: "No thread ID",
       lastEntry: "No last Entry",
-      lastAuthor: "No last Author"
+      lastAuthor: "No last Author",
+      entriesCount: 0
     }
     this.getStoryInfo = this.getStoryInfo.bind(this);
   }
@@ -19,7 +20,9 @@ class ThreadView extends Component {
         this.setState({
           title: response.data.title,
           lastEntry: response.data.entries[0].entry,
-          lastAuthor: response.data.entries[0].createdBy
+          lastAuthor: response.data.entries[0].createdBy,
+          maxChars: response.data.maxChars,
+          entriesLeft: response.data.maxEntries - response.data.entries.length
         })
       })
       .catch(error => {
@@ -38,8 +41,12 @@ class ThreadView extends Component {
           title={this.state.title}
           lastEntry={this.state.lastEntry}
           lastAuthor={this.state.lastAuthor}
+          entriesLeft={this.state.entriesLeft}
         />
-        <RulesPane />
+        <RulesPane
+          maxChars={this.state.maxChars}
+          entriesLeft={this.state.entriesLeft}
+        />
       </div>
     )
   }
@@ -62,15 +69,17 @@ class StoryPane extends Component {
   }
 
   submitContribution(){
-    axios.post("http://localhost:3000" + window.location.pathname, {
-      content: this.state.content
-    })
-      .then(response => {
-        console.log(response)
+    if(this.props.entriesLeft > 0){
+      axios.post("http://localhost:3000" + window.location.pathname, {
+        content: this.state.content
       })
-      .catch(error => {
-        console.log(error)
-      });
+        .then(response => {
+          console.log(response)
+        })
+        .catch(error => {
+          console.log(error)
+        });
+    }
   }
 
   render(){
@@ -82,9 +91,8 @@ class StoryPane extends Component {
           <p>{this.props.lastEntry}</p>
           <p>By: {this.props.lastAuthor}</p>
           <form>
-            <label className="aventir h1">{this.props.title}</label>
             <div className="form-group">
-              <label className="mt-4">Your contribution:</label>
+              <label className="mt-4">Write your contribution:</label>
               <textarea className="form-control" rows="6" onChange={this.handleContributionChange}></textarea>
             </div>
             <button className="btn btn-lg btn-dark" onClick={this.submitContribution}>Submit</button>
@@ -95,13 +103,13 @@ class StoryPane extends Component {
   }
 }
 
-const RulesPane = () => {
+const RulesPane = (props) => {
   return (
     <div className="col-md-6">
       <div className="bg-light-purp rounded p-3">
         <p className="rulesText">Thread Rules:</p>
-        <p>Maximum characters per entry: 50 </p>
-        <p>Entries left: 50</p>
+        <p>Maximum characters per entry: {props.maxChars}</p>
+        <p>Entries left: {props.entriesLeft}</p>
       </div>
     </div>
   )

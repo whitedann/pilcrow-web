@@ -139,7 +139,7 @@ class NewPostForm extends Component {
       maxEntries: 10,
       currentChars: 0,
       currentString: "",
-      title: ""
+      title: "(No Title)"
     };
 
     this.handleTitleChange = this.handleTitleChange.bind(this);
@@ -262,7 +262,7 @@ class ThreadListing extends Component {
         <a href={'/threads/' + this.props.id}>
           <button className="btn btn-light thread m-1 p-2">
               <span className="p font-weight-light">
-                { this.props.latestEntry }
+                { this.props.title }
               </span>
               <span className="entriesCount float-right">
                 { this.props.entryCount + "/10"}
@@ -328,6 +328,7 @@ const ThreadsList = (props) => {
               <ThreadListing
                 key = {thread._id.toString()}
                 latestEntry = {thread.entries[0].entry}
+                title = {thread.title}
                 entryCount = {thread.entryCount}
                 id = {thread._id}
               />

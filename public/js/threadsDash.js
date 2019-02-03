@@ -166,7 +166,7 @@ var NewPostForm = function (_Component2) {
       maxEntries: 10,
       currentChars: 0,
       currentString: "",
-      title: ""
+      title: "(No Title)"
     };
 
     _this6.handleTitleChange = _this6.handleTitleChange.bind(_this6);
@@ -385,7 +385,7 @@ var ThreadListing = function (_Component3) {
           React.createElement(
             "span",
             { className: "p font-weight-light" },
-            this.props.latestEntry
+            this.props.title
           ),
           React.createElement(
             "span",
@@ -466,6 +466,7 @@ var ThreadsList = function ThreadsList(props) {
         return React.createElement(ThreadListing, {
           key: thread._id.toString(),
           latestEntry: thread.entries[0].entry,
+          title: thread.title,
           entryCount: thread.entryCount,
           id: thread._id
         });

@@ -149,7 +149,6 @@ router.post('/:tID', mid.loggedIn, function(req, res, next) {
           return next(error);
         }
         else {
-          entry.createdBy = user;
           user.contributions.push(entry);
           user.contributionsCount++;
           user.save(function(err, user) {
@@ -166,7 +165,7 @@ router.post('/:tID', mid.loggedIn, function(req, res, next) {
   req.thread.save(function(err, thread){
     if(err) return next(err);
     res.status(201);
-    res.redirect(req.params.tID);
+    res.redirect('http://localhost:3000');
   });
 });
 

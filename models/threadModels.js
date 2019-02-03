@@ -22,7 +22,8 @@ const ThreadSchema = new mongoose.Schema({
       entryCount: {type: Number, default: 0},
       checkedOut: {type: Boolean, default: false},
       maxEntries: {type: Number, default: 0},
-      maxChars: {type: Number, default: 0}
+      maxChars: {type: Number, default: 0},
+      title: String,
 });
 
 ThreadSchema.statics.findRandomIncompleteThread = function(callback){

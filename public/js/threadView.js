@@ -18,9 +18,10 @@ var ThreadView = function (_Component) {
 
     _this.state = {
       title: "No Title",
-      threadID: "",
+      threadID: "No thread ID",
       lastEntry: "No last Entry",
-      lastAuthor: "No last Author"
+      lastAuthor: "No last Author",
+      entriesCount: 0
     };
     _this.getStoryInfo = _this.getStoryInfo.bind(_this);
     return _this;
@@ -35,7 +36,9 @@ var ThreadView = function (_Component) {
         _this2.setState({
           title: response.data.title,
           lastEntry: response.data.entries[0].entry,
-          lastAuthor: response.data.entries[0].createdBy
+          lastAuthor: response.data.entries[0].createdBy,
+          maxChars: response.data.maxChars,
+          entriesLeft: response.data.maxEntries - response.data.entries.length
         });
       }).catch(function (error) {
         console.log("Could not resolve thread", error);
@@ -55,9 +58,13 @@ var ThreadView = function (_Component) {
         React.createElement(StoryPane, {
           title: this.state.title,
           lastEntry: this.state.lastEntry,
-          lastAuthor: this.state.lastAuthor
+          lastAuthor: this.state.lastAuthor,
+          entriesLeft: this.state.entriesLeft
         }),
-        React.createElement(RulesPane, null)
+        React.createElement(RulesPane, {
+          maxChars: this.state.maxChars,
+          entriesLeft: this.state.entriesLeft
+        })
       );
     }
   }]);
@@ -91,13 +98,15 @@ var StoryPane = function (_Component2) {
   }, {
     key: "submitContribution",
     value: function submitContribution() {
-      axios.post("http://localhost:3000" + window.location.pathname, {
-        content: this.state.content
-      }).then(function (response) {
-        console.log(response);
-      }).catch(function (error) {
-        console.log(error);
-      });
+      if (this.props.entriesLeft > 0) {
+        axios.post("http://localhost:3000" + window.location.pathname, {
+          content: this.state.content
+        }).then(function (response) {
+          console.log(response);
+        }).catch(function (error) {
+          console.log(error);
+        });
+      }
     }
   }, {
     key: "render",
@@ -133,17 +142,12 @@ var StoryPane = function (_Component2) {
             "form",
             null,
             React.createElement(
-              "label",
-              { className: "aventir h1" },
-              this.props.title
-            ),
-            React.createElement(
               "div",
               { className: "form-group" },
               React.createElement(
                 "label",
                 { className: "mt-4" },
-                "Your contribution:"
+                "Write your contribution:"
               ),
               React.createElement("textarea", { className: "form-control", rows: "6", onChange: this.handleContributionChange })
             ),
@@ -161,7 +165,7 @@ var StoryPane = function (_Component2) {
   return StoryPane;
 }(Component);
 
-var RulesPane = function RulesPane() {
+var RulesPane = function RulesPane(props) {
   return React.createElement(
     "div",
     { className: "col-md-6" },
@@ -176,12 +180,14 @@ var RulesPane = function RulesPane() {
       React.createElement(
         "p",
         null,
-        "Maximum characters per entry: 50 "
+        "Maximum characters per entry: ",
+        props.maxChars
       ),
       React.createElement(
         "p",
         null,
-        "Entries left: 50"
+        "Entries left: ",
+        props.entriesLeft
       )
     )
   );
