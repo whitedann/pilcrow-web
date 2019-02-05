@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const User = require('../models/user');
 const Thread = require("../models/threadModels").Thread;
+const User = require('../models/user').User;
 const mid = require('../middleware');
 
 router.get('/', function(req, res){

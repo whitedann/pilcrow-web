@@ -21,7 +21,7 @@ class ThreadsWidget extends Component {
   }
 
   getCurrentUserInfo(){
-    axios.get('http://localhost:3000/profile.json')
+    axios.get("http://" + window.location.hostname + ":3000" + '/profile.json')
       .then(response => {
         this.setState({
           user: response.data.username
@@ -33,7 +33,7 @@ class ThreadsWidget extends Component {
   }
 
   generateYourPastThreads(){
-    axios.get('http://localhost:3000/profile.json')
+    axios.get("http://" + window.location.hostname + ":3000" + '/profile.json')
       .then(response => {
         this.setState({
           submissions: response.data.contributions,
@@ -52,7 +52,7 @@ class ThreadsWidget extends Component {
   // For rendering list of incomplete threads.
   // Check threads.js for get method of /threads/closed.json
   generateClosedThreads(){
-      axios.get('http://localhost:3000/threads/closed.json')
+      axios.get("http://" + window.location.hostname + ":3000" + window.location.pathname + '/closed.json')
         .then(response => {
           this.setState({
             threads: response.data,
@@ -71,7 +71,7 @@ class ThreadsWidget extends Component {
   // For rendering list of closed (completed) threads
   // Check threads.js for get method of /threads/open.json
   generateOpenThreads(){
-    axios.get('http://localhost:3000/threads/open.json')
+    axios.get("http://" + window.location.hostname + ":3000" + window.location.pathname + '/open.json')
       .then(response => {
         this.setState({
           threads: response.data,
@@ -152,12 +152,11 @@ class NewPostForm extends Component {
   makeAndRouteToNewThread(){
     //declare instance of this component to get around scoping issues of "this"
     const my = this;
-    axios.post('http://localhost:3000/threads/', {
+    axios.post("http://" + window.location.hostname + ":3000" + window.location.pathname, {
       content: my.state.currentString,
       maxEntries: my.state.maxEntries,
       title: my.state.title,
       maxChars: my.state.maxChars,
-      maxEntries: my.state.maxEntries,
     })
       .then(response => {
           console.log(response);

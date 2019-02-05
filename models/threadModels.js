@@ -46,4 +46,4 @@ const Entry = mongoose.model("Entry", EntrySchema);
 
 module.exports.Thread = Thread;
 module.exports.Entry = Entry;
-module.exports.EntrySchema = EntrySchema;
+module.exports.EntrySchema = EntrySchema

@@ -1,7 +1,5 @@
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
@@ -40,7 +38,7 @@ var ThreadsWidget = function (_Component) {
     value: function getCurrentUserInfo() {
       var _this2 = this;
 
-      axios.get('http://localhost:3000/profile.json').then(function (response) {
+      axios.get("http://" + window.location.hostname + ":3000" + '/profile.json').then(function (response) {
         _this2.setState({
           user: response.data.username
         });
@@ -53,7 +51,7 @@ var ThreadsWidget = function (_Component) {
     value: function generateYourPastThreads() {
       var _this3 = this;
 
-      axios.get('http://localhost:3000/profile.json').then(function (response) {
+      axios.get("http://" + window.location.hostname + ":3000" + '/profile.json').then(function (response) {
         _this3.setState({
           submissions: response.data.contributions,
           threads: [],
@@ -75,7 +73,7 @@ var ThreadsWidget = function (_Component) {
     value: function generateClosedThreads() {
       var _this4 = this;
 
-      axios.get('http://localhost:3000/threads/closed.json').then(function (response) {
+      axios.get("http://" + window.location.hostname + ":3000" + window.location.pathname + '/closed.json').then(function (response) {
         _this4.setState({
           threads: response.data,
           submissions: [],
@@ -97,7 +95,7 @@ var ThreadsWidget = function (_Component) {
     value: function generateOpenThreads() {
       var _this5 = this;
 
-      axios.get('http://localhost:3000/threads/open.json').then(function (response) {
+      axios.get("http://" + window.location.hostname + ":3000" + window.location.pathname + '/open.json').then(function (response) {
         _this5.setState({
           threads: response.data,
           submissions: [],
@@ -182,12 +180,12 @@ var NewPostForm = function (_Component2) {
     value: function makeAndRouteToNewThread() {
       //declare instance of this component to get around scoping issues of "this"
       var my = this;
-      axios.post('http://localhost:3000/threads/', _defineProperty({
+      axios.post("http://" + window.location.hostname + ":3000" + window.location.pathname, {
         content: my.state.currentString,
         maxEntries: my.state.maxEntries,
         title: my.state.title,
         maxChars: my.state.maxChars
-      }, "maxEntries", my.state.maxEntries)).then(function (response) {
+      }).then(function (response) {
         console.log(response);
       }).catch(function (error) {
         console.log(error);

@@ -3,7 +3,7 @@ const router = express.Router();
 const request = require('request');
 const Thread = require("../models/threadModels").Thread;
 const Entry = require("../models/threadModels").Entry;
-const User = require("../models/user");
+const User = require("../models/user").User;
 const mid = require('../middleware');
 
 

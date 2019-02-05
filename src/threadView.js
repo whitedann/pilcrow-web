@@ -1,6 +1,5 @@
 const Component = React.Component;
 
-
 class ThreadView extends Component {
   constructor(){
     super()
@@ -15,7 +14,7 @@ class ThreadView extends Component {
   }
 
   getStoryInfo(){
-    axios.get('http://localhost:3000' + window.location.pathname + "/data.json").
+    axios.get("http://" + window.location.hostname + ":3000" + window.location.pathname + "/data.json").
       then(response => {
         this.setState({
           title: response.data.title,
@@ -70,7 +69,7 @@ class StoryPane extends Component {
 
   submitContribution(){
     if(this.props.entriesLeft > 0){
-      axios.post("http://localhost:3000" + window.location.pathname, {
+      axios.post("http://" + window.location.hostname + ":3000" + window.location.pathname, {
         content: this.state.content
       })
         .then(response => {

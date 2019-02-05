@@ -59,10 +59,10 @@ app.use('/threads', threadRoutes);
 //Establish db and test connection.
 const mongoose = require('mongoose');
 mongoose.connect("mongodb://localhost:27017/threaddb",
-  { server: {
+  {
+    useNewUrlParser: true,
     reconnectTries: Number.MAX_VALUE,
     reconnectInterval: 1000
-    }
   }
 );
 const db = mongoose.connection;

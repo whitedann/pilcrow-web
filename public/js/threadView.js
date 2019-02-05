@@ -32,7 +32,7 @@ var ThreadView = function (_Component) {
     value: function getStoryInfo() {
       var _this2 = this;
 
-      axios.get('http://localhost:3000' + window.location.pathname + "/data.json").then(function (response) {
+      axios.get("http://" + window.location.hostname + ":3000" + window.location.pathname + "/data.json").then(function (response) {
         _this2.setState({
           title: response.data.title,
           lastEntry: response.data.entries[0].entry,
@@ -99,7 +99,7 @@ var StoryPane = function (_Component2) {
     key: "submitContribution",
     value: function submitContribution() {
       if (this.props.entriesLeft > 0) {
-        axios.post("http://localhost:3000" + window.location.pathname, {
+        axios.post("http://" + window.location.hostname + ":3000" + window.location.pathname, {
           content: this.state.content
         }).then(function (response) {
           console.log(response);
