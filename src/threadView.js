@@ -16,12 +16,25 @@ class ThreadView extends Component {
   getStoryInfo(){
     axios.get("http://" + window.location.hostname + ":3000" + window.location.pathname + "/data.json").
       then(response => {
+
+        //Build full story from entries
+        let entries = response.data.entries;
+        let mergedString = [];
+        entries.forEach(function(element){
+          mergedString.push(element.entry);
+        });
+        mergedString = mergedString.reverse();
+        mergedString = mergedString.join(" ");
+
+        //update
         this.setState({
           title: response.data.title,
           lastEntry: response.data.entries[0].entry,
           lastAuthor: response.data.entries[0].createdBy,
           maxChars: response.data.maxChars,
-          entriesLeft: response.data.maxEntries - response.data.entries.length
+          entriesCount: response.data.entries.length,
+          entriesLeft: response.data.maxEntries - response.data.entries.length,
+          theStorySoFar: mergedString
         })
       })
       .catch(error => {
@@ -34,17 +47,32 @@ class ThreadView extends Component {
   }
 
   render(){
+
     return (
+
+      this.state.entriesLeft > 0 ?
+
       <div className="row my-5">
         <StoryPane
           title={this.state.title}
           lastEntry={this.state.lastEntry}
           lastAuthor={this.state.lastAuthor}
           entriesLeft={this.state.entriesLeft}
+          maxChars={this.state.maxChars}
         />
         <RulesPane
           maxChars={this.state.maxChars}
           entriesLeft={this.state.entriesLeft}
+        />
+      </div>
+
+      :
+
+      <div className="row my-5">
+        <CompleteStory
+          title={this.state.title}
+          story={this.state.theStorySoFar}
+          entriesCount={this.state.entriesCount}
         />
       </div>
     )
@@ -73,10 +101,10 @@ class StoryPane extends Component {
         content: this.state.content
       })
         .then(response => {
-          console.log(response)
+          console.log(response);
         })
         .catch(error => {
-          console.log(error)
+          console.log(error);
         });
     }
   }
@@ -92,7 +120,7 @@ class StoryPane extends Component {
           <form>
             <div className="form-group">
               <label className="mt-4">Write your contribution:</label>
-              <textarea className="form-control" rows="6" onChange={this.handleContributionChange}></textarea>
+              <textarea className="form-control" rows="6" maxLength={this.props.maxChars} onChange={this.handleContributionChange}></textarea>
             </div>
             <button className="btn btn-lg btn-dark" onClick={this.submitContribution}>Submit</button>
           </form>
@@ -100,6 +128,16 @@ class StoryPane extends Component {
       </div>
     )
   }
+}
+
+const CompleteStory = (props) => {
+  return (
+    <div className="col-md-8 bg-light-purp rounded">
+      <h1>Title: {props.title}</h1>
+      <p>{props.story}</p>
+      <p>Number of submitted entries: {props.entriesCount}</p>
+    </div>
+  )
 }
 
 const RulesPane = (props) => {

@@ -7,6 +7,7 @@ class ThreadsWidget extends Component {
       threads: [],
       title: "Loading...",
       user: "Waiting...",
+      userScore: 0,
       submissions: [],
       leftColTitle: "",
       rightColTitle: "",
@@ -21,10 +22,11 @@ class ThreadsWidget extends Component {
   }
 
   getCurrentUserInfo(){
-    axios.get("http://" + window.location.hostname + ":3000" + '/profile.json')
+    axios.get("http://" + window.location.hostname + ":3000/profile.json")
       .then(response => {
         this.setState({
-          user: response.data.username
+          user: response.data.username,
+          userScore: response.data.contributionsCount
         });
       })
       .catch(error => {
@@ -33,19 +35,19 @@ class ThreadsWidget extends Component {
   }
 
   generateYourPastThreads(){
-    axios.get("http://" + window.location.hostname + ":3000" + '/profile.json')
+    axios.get("http://" + window.location.hostname + ":3000/profile.json")
       .then(response => {
         this.setState({
           submissions: response.data.contributions,
           threads: [],
-          title: "Your Contributions",
+          title: "Browse Your Contributions",
           leftColTitle: "Entry",
           rightColTitle: "",
           createPostClicked: false
         });
       })
       .catch(error => {
-        console.log("error fetching user submissions")
+        console.log("error fetching past threads")
       });
   }
 
@@ -57,7 +59,7 @@ class ThreadsWidget extends Component {
           this.setState({
             threads: response.data,
             submissions: [],
-            title: "Closed Threads",
+            title: "Browse Closed Threads",
             leftColTitle: "Title",
             rightColTitle: "Total Contributions",
             createPostClick: false
@@ -76,7 +78,7 @@ class ThreadsWidget extends Component {
         this.setState({
           threads: response.data,
           submissions: [],
-          title: "Open Threads",
+          title: "Browse Open Threads",
           leftColTitle: "Most Recent Entry",
           rightColTitle: "Entry Count",
           createPostClicked: false
@@ -108,6 +110,7 @@ class ThreadsWidget extends Component {
           generateYourPastThreads={this.generateYourPastThreads}
           createNewThreadForm={this.createNewThreadForm}
           user={this.state.user}
+          userScore={this.state.userScore}
         />
         {
           this.state.createPostClicked ?
@@ -135,7 +138,7 @@ class NewPostForm extends Component {
   constructor(){
     super()
     this.state = {
-      maxChars: 10,
+      maxChars: 1,
       maxEntries: 10,
       currentChars: 0,
       currentString: "",
@@ -196,15 +199,18 @@ class NewPostForm extends Component {
               <div className="form-group col-md-3">
                 <label>Max characters per entry</label>
                 <select value={this.state.maxChars} onChange={this.handleMaxCharChange} className="form-control">
+                  <option value="1">1</option>
                   <option value="10">10</option>
-                  <option value="20">20</option>
+                  <option value="50">50</option>
+                  <option value="100">100</option>
+                  <option value="200">200</option>
                 </select>
               </div>
               <div className="form-group col-md-3">
-                <label>Max characters per entry</label>
+                <label>Max entries per thread</label>
                 <select value={this.state.maxEntries} onChange={this.handleMaxEntriesChange} className="form-control">
-                  <option value="100">100</option>
-                  <option value="200">200</option>
+                  <option value="10">10</option>
+                  <option value="20">20</option>
                 </select>
               </div>
               <div className="col-md-6"></div>
@@ -221,7 +227,7 @@ class NewPostForm extends Component {
             <button className="btn btn-lg btn-dark text-center" onClick={this.makeAndRouteToNewThread}>
               Create
             </button>
-            <p className="mt-1 font-italic">Note: You can only create one thread per day </p>
+            <p className="mt-1 font-italic">You can only create one thread per day </p>
           </form>
         </div>
       </div>
@@ -233,7 +239,7 @@ const SideBar = (props) => {
     return (
         <div className="col-md-3 menu py-3 avenir">
           <h3>{props.user}</h3>
-          <p>Score: 9</p>
+          <p>Total Contributions: {props.userScore}</p>
           <hr className="menu-divider mt-0"></hr>
           <button className="btn btn-block btn-primary mt-3 py-2" onClick={props.generateClosedThreads}>
             Closed Threads

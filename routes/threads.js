@@ -32,7 +32,7 @@ router.get('/', mid.loggedIn, function(req, res, next) {
 
 // GET /threads/all.json
 //Route that returns json of all threads in DB
-router.get('/all.json', function(req, res, next) {
+router.get('/all.json', mid.loggedIn, function(req, res, next) {
   Thread.find({}, null, {sort: {createdAt: -1}}, function(err, threads){
     if(err) return next(err);
     res.json(threads);
@@ -41,8 +41,8 @@ router.get('/all.json', function(req, res, next) {
 
 // GET /threads/open.json
 //Route that returns json of all open threads.
-router.get('/open.json', function(req, res, next) {
-  Thread.find({entryCount: {$lt : 10}}, function(err, threads){
+router.get('/open.json', mid.loggedIn, function(req, res, next) {
+  Thread.find({entriesLeft: {$gt : 0}}, null, {sort: {createdAt: -1}}, function(err, threads){
     if(err) return next(err);
     res.json(threads);
   });
@@ -50,8 +50,8 @@ router.get('/open.json', function(req, res, next) {
 
 // GET /threads/closed.json
 //Route that returns json of all closed threads.
-router.get('/closed.json', function(req, res, next) {
-  Thread.find({entryCount: {$gt : 9}}, function(err, threads){
+router.get('/closed.json', mid.loggedIn, function(req, res, next) {
+  Thread.find({entriesLeft: {$lt : 1}}, null, {sort: {createdAt: -1}}, function(err, threads){
     if(err) return next(err);
     res.json(threads);
   });
@@ -59,9 +59,11 @@ router.get('/closed.json', function(req, res, next) {
 
 // POST /threads
 // Route for creating a new thread.
-router.post('/', function(req, res, next) {
+router.post('/', mid.loggedIn, function(req, res, next) {
   const thread = new Thread(req.body);
   const firstEntry = new Entry();
+  firstEntry.entry = req.body.content;
+  firstEntry.createdBy = req.session.username;
 
   //Add Entry to user's contributions.
   User.findById(req.session.userId)
@@ -75,17 +77,16 @@ router.post('/', function(req, res, next) {
           user.save(function(err, user) {
             if(err) return next(err);
           });
-
         }
   });
 
   //When a new thread is created, it is initialized with a single empty entry
   //The purpose of this is to prevent there from there being a thread with 0 entries
-  firstEntry.entry = req.body.content;
-  firstEntry.createdBy = req.session.username;
   thread.entries.push(firstEntry);
   thread.maxEntries = req.body.maxEntries;
   thread.maxChars = req.body.maxChars;
+  thread.entriesLeft = req.body.maxEntries;
+  thread.entriesLeft--;
   thread.entryCount++;
   thread.title = req.body.title;
 
@@ -93,37 +94,28 @@ router.post('/', function(req, res, next) {
   thread.save(function(err, thread) {
     if(err) return next(err);
     res.status(201);
-    res.json(thread);
+    res.send(thread);
   });
 
 });
 
 // GET /threads/:tID
-// Route for displaying a single thread. Requires logged in status.
-router.get('/:tID', function(req, res) {
+// Route for displaying a single thread.
+router.get('/:tID', mid.loggedIn, function(req, res) {
   const id = req.params.tID;
   Thread.findById(id, function(error, thread) {
     if(error) return next(error);
     else {
-      let entries = thread.entries;
-      let mergedString = [];
-      entries.forEach(function(element){
-        mergedString.push(element.entry);
-      });
-      mergedString = mergedString.reverse();
-      mergedString = mergedString.join(" ");
       res.render('singleThread', {
         title: id,
-        completeString: mergedString,
-        maxEntries: thread.maxEntries,
-        entryCount: thread.entryCount,
-        maxChars: thread.maxChars
       });
     }
   });
 });
 
-router.get('/:tID/data.json', function(req, res) {
+// GET /thread/:tID/data.json
+// Route to provide json of given thread.
+router.get('/:tID/data.json', mid.loggedIn, function(req, res) {
   const id = req.params.tID;
   Thread.findById(id, function(error, thread) {
     if(error) return next(error);
@@ -162,10 +154,11 @@ router.post('/:tID', mid.loggedIn, function(req, res, next) {
   //Hence, req.thread.<item> See router.param() above.
   req.thread.entries.push(entry);
   req.thread.entryCount++;
+  req.thread.entriesLeft--;
   req.thread.save(function(err, thread){
     if(err) return next(err);
-    res.status(201);
-    res.redirect('http://localhost:3000');
+    //TODO: Fix this redirect (not working)
+    res.send({redirect: '/'})
   });
 });
 
@@ -178,24 +171,5 @@ router.delete('/:tID', mid.loggedIn, function(req, res, next) {
     res.json(result);
   });
 });
-
-// POST /threads/:tID/:sID/vote-up
-// POST /threads/:tID/:sID/vote-down
-router.post('/:tID/:sID/vote-:dir', function(req, res, next) {
-    if(req.params.dir.search(/^(up|down)$/) === -1) {
-      const e = new Error("Not Found");
-      e.status = 400;
-      next(e);
-    } else {
-      req.vote = req.params.dir;
-      next();
-    }
-  }, function(req, res) {
-    req.entry.vote(req.vote, function(err, thread) {
-      if(err) return next(err);
-      res.json(thread);
-    });
-});
-
 
 module.exports = router;

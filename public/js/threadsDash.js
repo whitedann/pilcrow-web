@@ -20,6 +20,7 @@ var ThreadsWidget = function (_Component) {
       threads: [],
       title: "Loading...",
       user: "Waiting...",
+      userScore: 0,
       submissions: [],
       leftColTitle: "",
       rightColTitle: "",
@@ -38,9 +39,10 @@ var ThreadsWidget = function (_Component) {
     value: function getCurrentUserInfo() {
       var _this2 = this;
 
-      axios.get("http://" + window.location.hostname + ":3000" + '/profile.json').then(function (response) {
+      axios.get("http://" + window.location.hostname + ":3000/profile.json").then(function (response) {
         _this2.setState({
-          user: response.data.username
+          user: response.data.username,
+          userScore: response.data.contributionsCount
         });
       }).catch(function (error) {
         console.log("error finding current user", error);
@@ -51,17 +53,17 @@ var ThreadsWidget = function (_Component) {
     value: function generateYourPastThreads() {
       var _this3 = this;
 
-      axios.get("http://" + window.location.hostname + ":3000" + '/profile.json').then(function (response) {
+      axios.get("http://" + window.location.hostname + ":3000/profile.json").then(function (response) {
         _this3.setState({
           submissions: response.data.contributions,
           threads: [],
-          title: "Your Contributions",
+          title: "Browse Your Contributions",
           leftColTitle: "Entry",
           rightColTitle: "",
           createPostClicked: false
         });
       }).catch(function (error) {
-        console.log("error fetching user submissions");
+        console.log("error fetching past threads");
       });
     }
 
@@ -77,7 +79,7 @@ var ThreadsWidget = function (_Component) {
         _this4.setState({
           threads: response.data,
           submissions: [],
-          title: "Closed Threads",
+          title: "Browse Closed Threads",
           leftColTitle: "Title",
           rightColTitle: "Total Contributions",
           createPostClick: false
@@ -99,7 +101,7 @@ var ThreadsWidget = function (_Component) {
         _this5.setState({
           threads: response.data,
           submissions: [],
-          title: "Open Threads",
+          title: "Browse Open Threads",
           leftColTitle: "Most Recent Entry",
           rightColTitle: "Entry Count",
           createPostClicked: false
@@ -133,7 +135,8 @@ var ThreadsWidget = function (_Component) {
           generateClosedThreads: this.generateClosedThreads,
           generateYourPastThreads: this.generateYourPastThreads,
           createNewThreadForm: this.createNewThreadForm,
-          user: this.state.user
+          user: this.state.user,
+          userScore: this.state.userScore
         }),
         this.state.createPostClicked ? React.createElement(NewPostForm, {
           title: this.state.title
@@ -160,7 +163,7 @@ var NewPostForm = function (_Component2) {
     var _this6 = _possibleConstructorReturn(this, (NewPostForm.__proto__ || Object.getPrototypeOf(NewPostForm)).call(this));
 
     _this6.state = {
-      maxChars: 10,
+      maxChars: 1,
       maxEntries: 10,
       currentChars: 0,
       currentString: "",
@@ -243,27 +246,19 @@ var NewPostForm = function (_Component2) {
                   { value: this.state.maxChars, onChange: this.handleMaxCharChange, className: "form-control" },
                   React.createElement(
                     "option",
+                    { value: "1" },
+                    "1"
+                  ),
+                  React.createElement(
+                    "option",
                     { value: "10" },
                     "10"
                   ),
                   React.createElement(
                     "option",
-                    { value: "20" },
-                    "20"
-                  )
-                )
-              ),
-              React.createElement(
-                "div",
-                { className: "form-group col-md-3" },
-                React.createElement(
-                  "label",
-                  null,
-                  "Max characters per entry"
-                ),
-                React.createElement(
-                  "select",
-                  { value: this.state.maxEntries, onChange: this.handleMaxEntriesChange, className: "form-control" },
+                    { value: "50" },
+                    "50"
+                  ),
                   React.createElement(
                     "option",
                     { value: "100" },
@@ -273,6 +268,29 @@ var NewPostForm = function (_Component2) {
                     "option",
                     { value: "200" },
                     "200"
+                  )
+                )
+              ),
+              React.createElement(
+                "div",
+                { className: "form-group col-md-3" },
+                React.createElement(
+                  "label",
+                  null,
+                  "Max entries per thread"
+                ),
+                React.createElement(
+                  "select",
+                  { value: this.state.maxEntries, onChange: this.handleMaxEntriesChange, className: "form-control" },
+                  React.createElement(
+                    "option",
+                    { value: "10" },
+                    "10"
+                  ),
+                  React.createElement(
+                    "option",
+                    { value: "20" },
+                    "20"
                   )
                 )
               ),
@@ -313,7 +331,7 @@ var NewPostForm = function (_Component2) {
             React.createElement(
               "p",
               { className: "mt-1 font-italic" },
-              "Note: You can only create one thread per day "
+              "You can only create one thread per day "
             )
           )
         )
@@ -336,7 +354,8 @@ var SideBar = function SideBar(props) {
     React.createElement(
       "p",
       null,
-      "Score: 9"
+      "Total Contributions: ",
+      props.userScore
     ),
     React.createElement("hr", { className: "menu-divider mt-0" }),
     React.createElement(

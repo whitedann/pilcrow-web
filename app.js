@@ -18,7 +18,9 @@ app.use(function(req, res, next){
 //Allows sessions for tracking logins
 app.use(session({
   secret: 'threading is fun',
+  //Forces the session to be saved if anything in the request changes
   resave: true,
+  //We dont want to save uninitizalied session.
   saveUninitialized: false
 }));
 
@@ -37,14 +39,14 @@ app.use(function(req, res, next){
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
+//morgan logger to see HTTP Requests in console
+const logger = require('morgan');
+app.use(logger("dev"));
+
 //Tell Express to serve static files in /public
 //The "static" part creates a virtual diretory from which
 //we can access static assets from any page with ../static/<file>
 app.use('/static', express.static(__dirname + '/public'));
-
-//morgan logger
-const logger = require('morgan');
-app.use(logger("dev"));
 
 //Setup pug view engine
 app.set('view engine', 'pug');
@@ -61,33 +63,41 @@ const mongoose = require('mongoose');
 mongoose.connect("mongodb://localhost:27017/threaddb",
   {
     useNewUrlParser: true,
+    //tries to reconnect if it loses connection
+    //(e.g. mongo daemon is accidentally turned off)
     reconnectTries: Number.MAX_VALUE,
     reconnectInterval: 1000
   }
 );
+
 const db = mongoose.connection;
+
 db.on("error", function(e){
   console.log("connection error!", e);
 });
+
 db.once("open", function(){
   console.log("db connection success!");
 });
 
 //If the request lands here, catch with 404 error
+// and forward to error handler
 app.use(function(req, res, next) {
   let e = new Error("Not Found");
   e.status = 404;
   next(e);
 });
 
+//error handler
 app.use(function(e, req, res, next) {
+  //Status 500: Server error
   res.status(e.status || 500);
+  //send error to user as json
   res.json({
     error: e.message
   })
 })
 
-//default port 3000
 let port = process.env.PORT || 3000;
 
 app.listen(port, function() {

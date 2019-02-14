@@ -33,12 +33,25 @@ var ThreadView = function (_Component) {
       var _this2 = this;
 
       axios.get("http://" + window.location.hostname + ":3000" + window.location.pathname + "/data.json").then(function (response) {
+
+        //Build full story from entries
+        var entries = response.data.entries;
+        var mergedString = [];
+        entries.forEach(function (element) {
+          mergedString.push(element.entry);
+        });
+        mergedString = mergedString.reverse();
+        mergedString = mergedString.join(" ");
+
+        //update
         _this2.setState({
           title: response.data.title,
           lastEntry: response.data.entries[0].entry,
           lastAuthor: response.data.entries[0].createdBy,
           maxChars: response.data.maxChars,
-          entriesLeft: response.data.maxEntries - response.data.entries.length
+          entriesCount: response.data.entries.length,
+          entriesLeft: response.data.maxEntries - response.data.entries.length,
+          theStorySoFar: mergedString
         });
       }).catch(function (error) {
         console.log("Could not resolve thread", error);
@@ -52,18 +65,28 @@ var ThreadView = function (_Component) {
   }, {
     key: "render",
     value: function render() {
-      return React.createElement(
+
+      return this.state.entriesLeft > 0 ? React.createElement(
         "div",
         { className: "row my-5" },
         React.createElement(StoryPane, {
           title: this.state.title,
           lastEntry: this.state.lastEntry,
           lastAuthor: this.state.lastAuthor,
-          entriesLeft: this.state.entriesLeft
+          entriesLeft: this.state.entriesLeft,
+          maxChars: this.state.maxChars
         }),
         React.createElement(RulesPane, {
           maxChars: this.state.maxChars,
           entriesLeft: this.state.entriesLeft
+        })
+      ) : React.createElement(
+        "div",
+        { className: "row my-5" },
+        React.createElement(CompleteStory, {
+          title: this.state.title,
+          story: this.state.theStorySoFar,
+          entriesCount: this.state.entriesCount
         })
       );
     }
@@ -149,7 +172,7 @@ var StoryPane = function (_Component2) {
                 { className: "mt-4" },
                 "Write your contribution:"
               ),
-              React.createElement("textarea", { className: "form-control", rows: "6", onChange: this.handleContributionChange })
+              React.createElement("textarea", { className: "form-control", rows: "6", maxLength: this.props.maxChars, onChange: this.handleContributionChange })
             ),
             React.createElement(
               "button",
@@ -164,6 +187,30 @@ var StoryPane = function (_Component2) {
 
   return StoryPane;
 }(Component);
+
+var CompleteStory = function CompleteStory(props) {
+  return React.createElement(
+    "div",
+    { className: "col-md-8 bg-light-purp rounded" },
+    React.createElement(
+      "h1",
+      null,
+      "Title: ",
+      props.title
+    ),
+    React.createElement(
+      "p",
+      null,
+      props.story
+    ),
+    React.createElement(
+      "p",
+      null,
+      "Number of submitted entries: ",
+      props.entriesCount
+    )
+  );
+};
 
 var RulesPane = function RulesPane(props) {
   return React.createElement(

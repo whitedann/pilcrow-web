@@ -4,6 +4,8 @@ const Thread = require("../models/threadModels").Thread;
 const User = require('../models/user').User;
 const mid = require('../middleware');
 
+// GET root
+// Route handler for home page
 router.get('/', function(req, res){
   return res.render('index', {title: 'Home'});
 });
@@ -11,13 +13,12 @@ router.get('/', function(req, res){
 // GET /write
 // Routes to random thread
 router.get('/write', function(req, res, next) {
-  Thread.aggregate([{$sample: {size: 1}}], function(error, thread){
+  Thread.findRandomIncompleteThread(function(error, thread){
     if(error) return next(error);
     else {
       //.aggregate returns an array of size 1, so we have to select it
       // with indexing so that we can access its members, like _id.
-      const thr = thread[0];
-      res.redirect("/threads/" + thr._id);
+      res.redirect("/threads/" + thread._id);
     }
   });
 });
@@ -36,7 +37,10 @@ router.get('/profile', mid.loggedIn, function(req, res, next) {
         if(error) {
           return next(error);
         } else {
-          return res.render('profile', {title: 'Profile', name: user.username});
+          return res.render('profile', {
+            title: 'Profile',
+            name: user.username,
+            score: user.contributionsCount});
         }
       });
 });
@@ -121,6 +125,7 @@ router.post('/register', function(req, res, next){
     //Check that passwords match.
     if(req.body.password !== req.body.confirmPassword){
         const err = new Error("Passwords do not match");
+        //400: bad request
         err.status = 400;
         return next(err);
     }

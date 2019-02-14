@@ -3,7 +3,6 @@ const Schema = mongoose.Schema;
 
 
 const sortEntries = function(a, b){
-  // negative if a before b
   //0 no change
   // positive a after
   return b.createdAt - a.createdAt;
@@ -17,17 +16,19 @@ const EntrySchema = new mongoose.Schema({
 });
 
 const ThreadSchema = new mongoose.Schema({
-      createdAt: {type: Date, default: Date.now},
-      entries: [EntrySchema],
-      entryCount: {type: Number, default: 0},
-      checkedOut: {type: Boolean, default: false},
-      maxEntries: {type: Number, default: 0},
-      maxChars: {type: Number, default: 0},
-      title: String,
+  title: String,
+  entries: [EntrySchema],
+  entryCount: {type: Number, default: 0},
+  maxEntries: {type: Number, default: 0},
+  entriesLeft: {type: Number, default: 0},
+  maxChars: {type: Number, default: 0},
+  createdAt: {type: Date, default: Date.now},
 });
 
 ThreadSchema.statics.findRandomIncompleteThread = function(callback){
-  Thread.findOne({entryCount : 0}).exec(function(err, thread) {
+  //Not yet working. Finds first thread that satisfies request,
+  //but it is not random
+  Thread.findOne({entriesLeft : { $gt : 0 }}).exec(function(err, thread) {
     if(err){
       return next(err);
     }

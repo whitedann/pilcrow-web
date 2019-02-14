@@ -43,8 +43,6 @@ UserSchema.statics.authenticate = function(email, password, callback) {
       if(result === true){
         return callback(null, user);
       } else {
-        console.log(password);
-        console.log(user.password);
         return callback();
       }
     });
