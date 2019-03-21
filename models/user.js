@@ -20,8 +20,13 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  avatar: {
+    type: String,
+    required: true
+  },
   contributionsCount: {type: Number, default: 0},
-  contributions: [EntrySchema]
+  contributions: [EntrySchema],
+  lastContributionTime: {type: Date, default: Date.now}
 });
 
 UserSchema.statics.authenticate = function(email, password, callback) {

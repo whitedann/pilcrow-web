@@ -7,7 +7,7 @@ function loggedOut(req, res, next) {
 
 function loggedIn(req, res, next){
   if(!req.session.userId) {
-    return res.send('notLoggedIn');
+    return res.render('notLoggedIn');
   }
   next();
 }

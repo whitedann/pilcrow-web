@@ -1,4 +1,4 @@
-const Component = React.Component;
+  const Component = React.Component;
 
 class ThreadsWidget extends Component {
   constructor(){
@@ -9,9 +9,10 @@ class ThreadsWidget extends Component {
       user: "Waiting...",
       userScore: 0,
       submissions: [],
-      leftColTitle: "",
-      rightColTitle: "",
-      createPostClick: false
+      createPostClick: false,
+      currentPageOpen: 0,
+      currentPageClosed: 0,
+      currentDisplay: "NONE"
     }
     //Bind the functions to the instance of this component.
     this.generateClosedThreads = this.generateClosedThreads.bind(this);
@@ -19,6 +20,10 @@ class ThreadsWidget extends Component {
     this.generateYourPastThreads = this.generateYourPastThreads.bind(this);
     this.getCurrentUserInfo = this.getCurrentUserInfo.bind(this);
     this.createNewThreadForm = this.createNewThreadForm.bind(this);
+    this.pageForwardOpen = this.pageForwardOpen.bind(this);
+    this.pageBackwardOpen = this.pageBackwardOpen.bind(this);
+    this.pageForwardClosed = this.pageForwardClosed.bind(this);
+    this.pageBackwardClosed = this.pageBackwardClosed.bind(this);
   }
 
   getCurrentUserInfo(){
@@ -41,8 +46,6 @@ class ThreadsWidget extends Component {
           submissions: response.data.contributions,
           threads: [],
           title: "Browse Your Contributions",
-          leftColTitle: "Entry",
-          rightColTitle: "",
           createPostClicked: false
         });
       })
@@ -54,39 +57,89 @@ class ThreadsWidget extends Component {
   // For rendering list of incomplete threads.
   // Check threads.js for get method of /threads/closed.json
   generateClosedThreads(){
-      axios.get("http://" + window.location.hostname + ":3000" + window.location.pathname + '/closed.json')
+      axios.get("http://" + window.location.hostname + ":3000" + window.location.pathname + '/closed?page=' + this.state.currentPageClosed)
         .then(response => {
           this.setState({
             threads: response.data,
             submissions: [],
             title: "Browse Closed Threads",
-            leftColTitle: "Title",
-            rightColTitle: "Total Contributions",
-            createPostClick: false
+            createPostClick: false,
+            currentDisplay: "CLOSED"
           });
+        })
+        .then( () => {
+          if(this.state.threads.length == 0){
+            this.pageBackwardClosed();
+          }
         })
         .catch(error => {
           console.log("error fetching completed threads", error);
         });
   }
 
-  // For rendering list of closed (completed) threads
+  // For rendering list of open threads
   // Check threads.js for get method of /threads/open.json
   generateOpenThreads(){
-    axios.get("http://" + window.location.hostname + ":3000" + window.location.pathname + '/open.json')
+    axios.get("http://" + window.location.hostname + ":3000" + window.location.pathname + '/open?page=' + this.state.currentPageOpen)
       .then(response => {
         this.setState({
           threads: response.data,
           submissions: [],
           title: "Browse Open Threads",
-          leftColTitle: "Most Recent Entry",
-          rightColTitle: "Entry Count",
-          createPostClicked: false
+          createPostClicked: false,
+          currentDisplay: "OPEN"
         });
+      })
+      .then( () => {
+        if(this.state.threads.length == 0){
+          this.pageBackwardOpen();
+        }
       })
       .catch(error => {
         console.log("error fetching completed threads", error);
       });
+  }
+
+  pageForwardOpen(){
+    this.setState({
+      currentPageOpen: this.state.currentPageOpen + 1
+    }, () => {
+      this.generateOpenThreads();
+    });
+  }
+
+  pageBackwardOpen(){
+    if(this.state.currentPageOpen > 0){
+      this.setState({
+        currentPageOpen: this.state.currentPageOpen - 1
+      }, () => {
+        this.generateOpenThreads( () => {
+          console.log(thisstate.currentDisplay);
+        });
+      });
+    }
+  }
+
+  pageForwardClosed(){
+    this.setState({
+      currentPageClosed: this.state.currentPageClosed + 1
+    }, () => {
+      this.generateClosedThreads( () => {
+        console.log(this.state.currentDisplay);
+      });
+    });
+  }
+
+  pageBackwardClosed(){
+    if(this.state.currentPageClosed > 0){
+      this.setState({
+        currentPageClosed: this.state.currentPageClosed - 1
+      }, () => {
+        this.generateClosedThreads( () => {
+          console.log(this.state.currentDisplay);
+        });
+      });
+    }
   }
 
   createNewThreadForm(){
@@ -103,15 +156,17 @@ class ThreadsWidget extends Component {
 
   render(){
     return (
-      <div className="row my-5">
-        <SideBar
-          generateOpenThreads={this.generateOpenThreads}
-          generateClosedThreads={this.generateClosedThreads}
-          generateYourPastThreads={this.generateYourPastThreads}
-          createNewThreadForm={this.createNewThreadForm}
-          user={this.state.user}
-          userScore={this.state.userScore}
-        />
+      <div className="row my-5 x">
+        <div className="col-md-3">
+          <SideBar
+            generateOpenThreads={this.generateOpenThreads}
+            generateClosedThreads={this.generateClosedThreads}
+            generateYourPastThreads={this.generateYourPastThreads}
+            createNewThreadForm={this.createNewThreadForm}
+            user={this.state.user}
+            userScore={this.state.userScore}
+          />
+        </div>
         {
           this.state.createPostClicked ?
 
@@ -120,14 +175,25 @@ class ThreadsWidget extends Component {
           />
 
           :
-
-          <ThreadsList
-            threads={this.state.threads}
-            submissions={this.state.submissions}
-            title={this.state.title}
-            leftColTitle={this.state.leftColTitle}
-            rightColTitle={this.state.rightColTitle}
-          />
+          <div className="col-md-9">
+            <ThreadsList
+              threads={this.state.threads}
+              submissions={this.state.submissions}
+              title={this.state.title}
+              pageForwardOpen={this.pageForwardOpen}
+              pageBackwardOpen={this.pageBackwardOpen}
+              pageForwardClosed={this.pageForwardClosed}
+              pageBackwardClosed={this.pageBackwardClosed}
+              currentDisplay={this.state.currentDisplay}
+            />
+            <PageButtons
+              pageForwardOpen={this.pageForwardOpen}
+              pageBackwardOpen={this.pageBackwardOpen}
+              pageForwardClosed={this.pageForwardClosed}
+              pageBackwardClosed={this.pageBackwardClosed}
+              currentDisplay={this.state.currentDisplay}
+            />
+          </div>
         }
       </div>
     )
@@ -162,7 +228,7 @@ class NewPostForm extends Component {
       maxChars: my.state.maxChars,
     })
       .then(response => {
-          console.log(response);
+        console.log(response);
       })
       .catch(error => {
         console.log(error)
@@ -237,7 +303,7 @@ class NewPostForm extends Component {
 
 const SideBar = (props) => {
     return (
-        <div className="col-md-3 menu py-3 avenir">
+        <div className="container menu p-3 avenir">
           <h3>{props.user}</h3>
           <p>Total Contributions: {props.userScore}</p>
           <hr className="menu-divider mt-0"></hr>
@@ -266,11 +332,16 @@ class ThreadListing extends Component {
     return (
         <a href={'/threads/' + this.props.id}>
           <button className="btn btn-light thread m-1 p-2">
-              <span className="p font-weight-light">
+              <span className="p avenir font-weight-light">
                 { this.props.title }
               </span>
-              <span className="entriesCount float-right">
-                { this.props.entryCount + "/10"}
+              <span className="float-right">
+                <div>
+                  Entries: { this.props.entryCount + "/" + this.props.maxEntries}
+                </div>
+                <div className="font-italic text-secondary">
+                  Last Updated: {this.props.createdAtHour}  {this.props.createdAtDay}
+                </div>
               </span>
           </button>
         </a>
@@ -291,17 +362,23 @@ const SubmissionListing = (props) => {
 }
 
 {/*Stateless*/}
-const ListHeading = (props) => {
-  return (
-    <div className="m-1">
-      <span className="h5 font-weight-light">
-        {props.leftColTitle}
-      </span>
-      <span className="h5 float-right font-weight-light">
-        {props.rightColTitle}
-      </span>
-    </div>
-  )
+const PageButtons = (props) => {
+  if(props.currentDisplay == "OPEN"){
+    return (
+      <div className="row mt-2 text-center page-buttons">
+        <button className="btn btn-light pageButtons col-md-6 bg-light-purp" onClick={props.pageBackwardOpen}><i className="fa fa-angle-double-left"></i>Back</button>
+        <button className="btn btn-light pageButtons col-md-6 bg-light-purp" onClick={props.pageForwardOpen}>Next<i className="fa fa-angle-double-right"></i></button>
+      </div>
+    )
+  }
+  else {
+    return (
+      <div className="mt-2 text-center page-buttons">
+        <button className="btn btn-light pageButtons col-md-6 bg-light-purp" onClick={props.pageBackwardClosed}><i className="fa fa-angle-double-left"></i>Back</button>
+        <button className="btn btn-light pageButtons col-md-6 bg-light-purp" onClick={props.pageForwardClosed}>Next<i className="fa fa-angle-double-right"></i></button>
+      </div>
+    )
+  }
 }
 
 {/*Stateless*/}
@@ -315,13 +392,9 @@ const PageHeading = (props) => {
 
 const ThreadsList = (props) => {
     return (
-        <div className="container col-md-9">
+        <div className="avenir">
           <PageHeading heading={props.title}/>
           <div className="threadsList">
-            <ListHeading
-              leftColTitle = {props.leftColTitle}
-              rightColTitle = {props.rightColTitle}
-            />
             {props.submissions.map( submission =>
               <SubmissionListing
                 key={submission._id.toString()}
@@ -334,7 +407,10 @@ const ThreadsList = (props) => {
                 key = {thread._id.toString()}
                 latestEntry = {thread.entries[0].entry}
                 title = {thread.title}
+                createdAtHour = {thread.createdAt.slice(11,19)}
+                createdAtDay   = {thread.createdAt.slice(0,10)}
                 entryCount = {thread.entryCount}
+                maxEntries = {thread.maxEntries}
                 id = {thread._id}
               />
             )}

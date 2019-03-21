@@ -4,6 +4,7 @@ const request = require('request');
 const Thread = require("../models/threadModels").Thread;
 const Entry = require("../models/threadModels").Entry;
 const User = require("../models/user").User;
+const Vote = require("../models/threadModels").Vote;
 const mid = require('../middleware');
 
 
@@ -41,29 +42,45 @@ router.get('/all.json', mid.loggedIn, function(req, res, next) {
 
 // GET /threads/open.json
 //Route that returns json of all open threads.
-router.get('/open.json', mid.loggedIn, function(req, res, next) {
-  Thread.find({entriesLeft: {$gt : 0}}, null, {sort: {createdAt: -1}}, function(err, threads){
-    if(err) return next(err);
-    res.json(threads);
+router.get('/open', mid.loggedIn, function(req, res, next) {
+
+  let page = parseInt(req.query.page) || 0;
+  let limit = 10;
+
+  Thread.find({
+    entriesLeft: {$gt : 0},
+    //seconds since last update
+    lastUpdated: {$lt: new Date() - 60000}
+  })
+  .sort({'entries[0].createdAt': -1}).skip(page*limit).limit(limit)
+  .exec(function(err, data){
+    res.json(data);
   });
 });
 
 // GET /threads/closed.json
 //Route that returns json of all closed threads.
-router.get('/closed.json', mid.loggedIn, function(req, res, next) {
-  Thread.find({entriesLeft: {$lt : 1}}, null, {sort: {createdAt: -1}}, function(err, threads){
-    if(err) return next(err);
-    res.json(threads);
+router.get('/closed', mid.loggedIn, function(req, res, next) {
+
+  let page = parseInt(req.query.page) || 0;
+  let limit = 10;
+
+  let threads = Thread.find({entriesLeft: {$lt : 1}}).sort({'entries[0].createdAt': -1}).skip(page*limit).limit(limit);
+  threads.exec(function(err, data){
+    res.json(data);
   });
 });
 
 // POST /threads
 // Route for creating a new thread.
 router.post('/', mid.loggedIn, function(req, res, next) {
-  const thread = new Thread(req.body);
+  const thread = new Thread();
   const firstEntry = new Entry();
   firstEntry.entry = req.body.content;
   firstEntry.createdBy = req.session.username;
+  firstEntry.createdByID = req.session.userId;
+  firstEntry.parentID = thread._id;
+  firstEntry.votes.push(new Vote());
 
   //Add Entry to user's contributions.
   User.findById(req.session.userId)
@@ -102,12 +119,37 @@ router.post('/', mid.loggedIn, function(req, res, next) {
 // GET /threads/:tID
 // Route for displaying a single thread.
 router.get('/:tID', mid.loggedIn, function(req, res) {
-  const id = req.params.tID;
-  Thread.findById(id, function(error, thread) {
+
+  const threadID = req.params.tID;
+  const userID = req.session.userId;
+
+  User.findById(userID).exec( function(error, user) {
     if(error) return next(error);
+    let timeSinceLastContribution = new Date() - user.lastContributionTime;
+    req.session.timeSinceLastContribution = (60000 - timeSinceLastContribution) / 1000;
+    if(timeSinceLastContribution < 60000){
+      res.render("tooSoon", {title: "Unable to Access", timeLeft: req.session.timeSinceLastContribution});
+    }
     else {
-      res.render('singleThread', {
-        title: id,
+      user.lastContributionTime = new Date();
+      user.save( function(error, user) {
+        if(error) return next(error);
+        Thread.findById(threadID, function(error, thread) {
+          if(error) return next(error);
+          let timeSinceLastAccessed = new Date() - thread.lastUpdated;
+          if(timeSinceLastAccessed < 60000){
+            res.render("threadInUse", {title: "Unable to Access", timeLeft: ((60000 - timeSinceLastAccessed) / 1000)});
+          }
+          else {
+            thread.lastUpdated = new Date();
+            thread.save(function(error, thread){
+              if(error) return next(error);
+              else {
+                res.render('singleThread', {title: threadID, id: threadID});
+              }
+            });
+          }
+        });
       });
     }
   });
@@ -132,7 +174,11 @@ router.post('/:tID', mid.loggedIn, function(req, res, next) {
   let entry = new Entry();
   entry.entry = req.body.content;
   entry.createdBy = req.session.username;
+  entry.createdByID = req.session.userId;
   entry.parentID = req.params.tID;
+
+  //initialize votes array with dummmy vote
+  entry.votes.push(new Vote());
 
   //Add Entry to user object.
   User.findById(req.session.userId)
@@ -155,11 +201,38 @@ router.post('/:tID', mid.loggedIn, function(req, res, next) {
   req.thread.entries.push(entry);
   req.thread.entryCount++;
   req.thread.entriesLeft--;
+  req.thread.status = "IDLE";
   req.thread.save(function(err, thread){
-    if(err) return next(err);
-    //TODO: Fix this redirect (not working)
-    res.send({redirect: '/'})
+    if(err) {
+      return next(err);
+    }
+    res.status(201);
+    res.send(thread);
   });
+});
+
+//Route for voting on an entry
+router.post('/:tID/entries/:eID/:val', mid.loggedIn, function(req, res, next){
+
+  let newVote = new Vote();
+  newVote.value = req.params.val;
+  newVote.userID = req.session.userId;
+
+  //Update Thread with new vote.
+  Thread.findById(req.params.tID)
+    .exec(function(error, thread) {
+      if(error) return next(error);
+      else {
+        thread.entries.forEach(function(entry){
+          if(entry._id == req.params.eID){
+            entry.votes.push(newVote);
+          }
+        });
+        thread.save(function(err, thread){
+          if(err) return next(err);
+        });
+      }
+    });
 });
 
 // DELETE /threads/:tID

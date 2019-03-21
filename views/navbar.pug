@@ -15,15 +15,21 @@ nav.navbar.navbar-expand-lg.bg-light.navbar-light
             a(href="/login").btn.btn-outline-dark.btn-lg.font-weight-bold Sign In
     else
       ul.navbar-nav
-        li.nav-item
+        if timeSinceLastContribution
+        li.nav-item.mr-3.mt-auto
+          p.text-dark.font-weight-light #{timeSinceLastContribution}
+        li.nav-item.mr-3
           a.nav-link(href="/write") 
-            h4.text-dark.font-weight-light Write
+            h4.text-dark.font-weight-light QuickWrite
         li.nav-item.mr-3
           a.nav-link(href="/threads") 
-            h4.text-dark.font-weight-light Discover
+            h4.text-dark.font-weight-light Dashboard
+        li.nav-item.mr-3
+          a.nav-link(href="/") 
+            h4.text-dark.font-weight-light Learn
         li.nav-item.border-left
           a.nav-link(href="/profile")
-            img.avatar(src="../static/profile.jpeg").ml-3
+            img.avatar(src='../static/res/avatar' + currentAvatarIcon + '.svg').ml-3
         li.nav-item.pl-0
           a.nav-link(href="/profile") 
             h4.text-dark.font-weight-light #{currentUserName}

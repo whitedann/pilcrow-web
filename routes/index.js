@@ -14,11 +14,16 @@ router.get('/', function(req, res){
 // Routes to random thread
 router.get('/write', function(req, res, next) {
   Thread.findRandomIncompleteThread(function(error, thread){
-    if(error) return next(error);
-    else {
+    if(error)
+      return next(error);
+    if(thread[0]) {
       //.aggregate returns an array of size 1, so we have to select it
       // with indexing so that we can access its members, like _id.
-      res.redirect("/threads/" + thread._id);
+      res.redirect("/threads/" + thread[0]._id);
+    }
+    else {
+      //for when there are no open threads
+      return res.render('index', {title: "Home"});
     }
   });
 });
@@ -40,7 +45,10 @@ router.get('/profile', mid.loggedIn, function(req, res, next) {
           return res.render('profile', {
             title: 'Profile',
             name: user.username,
-            score: user.contributionsCount});
+            currentName: user.email,
+            score: user.contributionsCount,
+            avatar: user.avatar
+          });
         }
       });
 });
@@ -84,6 +92,8 @@ router.post('/login', function(req, res, next) {
         //creates a new session
         req.session.userId = user._id;
         req.session.username = user.username;
+        req.session.avatarIcon = user.avatar;
+        req.session.timeSinceLastContribution = ((new Date() - user.lastContributionTime) / 1000).toFixed(0);
         return res.redirect('/threads');
       }
     });
@@ -121,7 +131,8 @@ router.post('/register', function(req, res, next){
   if(req.body.email &&
     req.body.password &&
     req.body.confirmPassword &&
-    req.body.username){
+    req.body.username &&
+    req.body.options){
     //Check that passwords match.
     if(req.body.password !== req.body.confirmPassword){
         const err = new Error("Passwords do not match");
@@ -134,7 +145,8 @@ router.post('/register', function(req, res, next){
     const userData = {
       email: req.body.email,
       username: req.body.username,
-      password: req.body.password
+      password: req.body.password,
+      avatar: req.body.options
     }
 
     User.create(userData, function(error, user) {
@@ -143,6 +155,7 @@ router.post('/register', function(req, res, next){
       } else {
         req.session.userId = user._id;
         req.session.username = user.username;
+        req.session.avatarIcon = user.avatar
         return res.redirect('/threads');
       }
     });
@@ -154,5 +167,9 @@ router.post('/register', function(req, res, next){
       return next(err);
     }
 });
+
+router.get('/thankyou', function(req, res, next) {
+  return res.render('thankyou');
+})
 
 module.exports = router;

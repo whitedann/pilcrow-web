@@ -22,15 +22,20 @@ var ThreadsWidget = function (_Component) {
       user: "Waiting...",
       userScore: 0,
       submissions: [],
-      leftColTitle: "",
-      rightColTitle: "",
-      createPostClick: false
+      createPostClick: false,
+      currentPageOpen: 0,
+      currentPageClosed: 0,
+      currentDisplay: "NONE"
       //Bind the functions to the instance of this component.
     };_this.generateClosedThreads = _this.generateClosedThreads.bind(_this);
     _this.generateOpenThreads = _this.generateOpenThreads.bind(_this);
     _this.generateYourPastThreads = _this.generateYourPastThreads.bind(_this);
     _this.getCurrentUserInfo = _this.getCurrentUserInfo.bind(_this);
     _this.createNewThreadForm = _this.createNewThreadForm.bind(_this);
+    _this.pageForwardOpen = _this.pageForwardOpen.bind(_this);
+    _this.pageBackwardOpen = _this.pageBackwardOpen.bind(_this);
+    _this.pageForwardClosed = _this.pageForwardClosed.bind(_this);
+    _this.pageBackwardClosed = _this.pageBackwardClosed.bind(_this);
     return _this;
   }
 
@@ -58,8 +63,6 @@ var ThreadsWidget = function (_Component) {
           submissions: response.data.contributions,
           threads: [],
           title: "Browse Your Contributions",
-          leftColTitle: "Entry",
-          rightColTitle: "",
           createPostClicked: false
         });
       }).catch(function (error) {
@@ -75,21 +78,24 @@ var ThreadsWidget = function (_Component) {
     value: function generateClosedThreads() {
       var _this4 = this;
 
-      axios.get("http://" + window.location.hostname + ":3000" + window.location.pathname + '/closed.json').then(function (response) {
+      axios.get("http://" + window.location.hostname + ":3000" + window.location.pathname + '/closed?page=' + this.state.currentPageClosed).then(function (response) {
         _this4.setState({
           threads: response.data,
           submissions: [],
           title: "Browse Closed Threads",
-          leftColTitle: "Title",
-          rightColTitle: "Total Contributions",
-          createPostClick: false
+          createPostClick: false,
+          currentDisplay: "CLOSED"
         });
+      }).then(function () {
+        if (_this4.state.threads.length == 0) {
+          _this4.pageBackwardClosed();
+        }
       }).catch(function (error) {
         console.log("error fetching completed threads", error);
       });
     }
 
-    // For rendering list of closed (completed) threads
+    // For rendering list of open threads
     // Check threads.js for get method of /threads/open.json
 
   }, {
@@ -97,18 +103,75 @@ var ThreadsWidget = function (_Component) {
     value: function generateOpenThreads() {
       var _this5 = this;
 
-      axios.get("http://" + window.location.hostname + ":3000" + window.location.pathname + '/open.json').then(function (response) {
+      axios.get("http://" + window.location.hostname + ":3000" + window.location.pathname + '/open?page=' + this.state.currentPageOpen).then(function (response) {
         _this5.setState({
           threads: response.data,
           submissions: [],
           title: "Browse Open Threads",
-          leftColTitle: "Most Recent Entry",
-          rightColTitle: "Entry Count",
-          createPostClicked: false
+          createPostClicked: false,
+          currentDisplay: "OPEN"
         });
+      }).then(function () {
+        if (_this5.state.threads.length == 0) {
+          _this5.pageBackwardOpen();
+        }
       }).catch(function (error) {
         console.log("error fetching completed threads", error);
       });
+    }
+  }, {
+    key: "pageForwardOpen",
+    value: function pageForwardOpen() {
+      var _this6 = this;
+
+      this.setState({
+        currentPageOpen: this.state.currentPageOpen + 1
+      }, function () {
+        _this6.generateOpenThreads();
+      });
+    }
+  }, {
+    key: "pageBackwardOpen",
+    value: function pageBackwardOpen() {
+      var _this7 = this;
+
+      if (this.state.currentPageOpen > 0) {
+        this.setState({
+          currentPageOpen: this.state.currentPageOpen - 1
+        }, function () {
+          _this7.generateOpenThreads(function () {
+            console.log(thisstate.currentDisplay);
+          });
+        });
+      }
+    }
+  }, {
+    key: "pageForwardClosed",
+    value: function pageForwardClosed() {
+      var _this8 = this;
+
+      this.setState({
+        currentPageClosed: this.state.currentPageClosed + 1
+      }, function () {
+        _this8.generateClosedThreads(function () {
+          console.log(_this8.state.currentDisplay);
+        });
+      });
+    }
+  }, {
+    key: "pageBackwardClosed",
+    value: function pageBackwardClosed() {
+      var _this9 = this;
+
+      if (this.state.currentPageClosed > 0) {
+        this.setState({
+          currentPageClosed: this.state.currentPageClosed - 1
+        }, function () {
+          _this9.generateClosedThreads(function () {
+            console.log(_this9.state.currentDisplay);
+          });
+        });
+      }
     }
   }, {
     key: "createNewThreadForm",
@@ -129,24 +192,42 @@ var ThreadsWidget = function (_Component) {
     value: function render() {
       return React.createElement(
         "div",
-        { className: "row my-5" },
-        React.createElement(SideBar, {
-          generateOpenThreads: this.generateOpenThreads,
-          generateClosedThreads: this.generateClosedThreads,
-          generateYourPastThreads: this.generateYourPastThreads,
-          createNewThreadForm: this.createNewThreadForm,
-          user: this.state.user,
-          userScore: this.state.userScore
-        }),
+        { className: "row my-5 x" },
+        React.createElement(
+          "div",
+          { className: "col-md-3" },
+          React.createElement(SideBar, {
+            generateOpenThreads: this.generateOpenThreads,
+            generateClosedThreads: this.generateClosedThreads,
+            generateYourPastThreads: this.generateYourPastThreads,
+            createNewThreadForm: this.createNewThreadForm,
+            user: this.state.user,
+            userScore: this.state.userScore
+          })
+        ),
         this.state.createPostClicked ? React.createElement(NewPostForm, {
           title: this.state.title
-        }) : React.createElement(ThreadsList, {
-          threads: this.state.threads,
-          submissions: this.state.submissions,
-          title: this.state.title,
-          leftColTitle: this.state.leftColTitle,
-          rightColTitle: this.state.rightColTitle
-        })
+        }) : React.createElement(
+          "div",
+          { className: "col-md-9" },
+          React.createElement(ThreadsList, {
+            threads: this.state.threads,
+            submissions: this.state.submissions,
+            title: this.state.title,
+            pageForwardOpen: this.pageForwardOpen,
+            pageBackwardOpen: this.pageBackwardOpen,
+            pageForwardClosed: this.pageForwardClosed,
+            pageBackwardClosed: this.pageBackwardClosed,
+            currentDisplay: this.state.currentDisplay
+          }),
+          React.createElement(PageButtons, {
+            pageForwardOpen: this.pageForwardOpen,
+            pageBackwardOpen: this.pageBackwardOpen,
+            pageForwardClosed: this.pageForwardClosed,
+            pageBackwardClosed: this.pageBackwardClosed,
+            currentDisplay: this.state.currentDisplay
+          })
+        )
       );
     }
   }]);
@@ -160,9 +241,9 @@ var NewPostForm = function (_Component2) {
   function NewPostForm() {
     _classCallCheck(this, NewPostForm);
 
-    var _this6 = _possibleConstructorReturn(this, (NewPostForm.__proto__ || Object.getPrototypeOf(NewPostForm)).call(this));
+    var _this10 = _possibleConstructorReturn(this, (NewPostForm.__proto__ || Object.getPrototypeOf(NewPostForm)).call(this));
 
-    _this6.state = {
+    _this10.state = {
       maxChars: 1,
       maxEntries: 10,
       currentChars: 0,
@@ -170,12 +251,12 @@ var NewPostForm = function (_Component2) {
       title: "(No Title)"
     };
 
-    _this6.handleTitleChange = _this6.handleTitleChange.bind(_this6);
-    _this6.makeAndRouteToNewThread = _this6.makeAndRouteToNewThread.bind(_this6);
-    _this6.handleMaxCharChange = _this6.handleMaxCharChange.bind(_this6);
-    _this6.handleTextAreaChange = _this6.handleTextAreaChange.bind(_this6);
-    _this6.handleMaxEntriesChange = _this6.handleMaxEntriesChange.bind(_this6);
-    return _this6;
+    _this10.handleTitleChange = _this10.handleTitleChange.bind(_this10);
+    _this10.makeAndRouteToNewThread = _this10.makeAndRouteToNewThread.bind(_this10);
+    _this10.handleMaxCharChange = _this10.handleMaxCharChange.bind(_this10);
+    _this10.handleTextAreaChange = _this10.handleTextAreaChange.bind(_this10);
+    _this10.handleMaxEntriesChange = _this10.handleMaxEntriesChange.bind(_this10);
+    return _this10;
   }
 
   _createClass(NewPostForm, [{
@@ -345,7 +426,7 @@ var NewPostForm = function (_Component2) {
 var SideBar = function SideBar(props) {
   return React.createElement(
     "div",
-    { className: "col-md-3 menu py-3 avenir" },
+    { className: "container menu p-3 avenir" },
     React.createElement(
       "h3",
       null,
@@ -401,13 +482,26 @@ var ThreadListing = function (_Component3) {
           { className: "btn btn-light thread m-1 p-2" },
           React.createElement(
             "span",
-            { className: "p font-weight-light" },
+            { className: "p avenir font-weight-light" },
             this.props.title
           ),
           React.createElement(
             "span",
-            { className: "entriesCount float-right" },
-            this.props.entryCount + "/10"
+            { className: "float-right" },
+            React.createElement(
+              "div",
+              null,
+              "Entries: ",
+              this.props.entryCount + "/" + this.props.maxEntries
+            ),
+            React.createElement(
+              "div",
+              { className: "font-italic text-secondary" },
+              "Last Updated: ",
+              this.props.createdAtHour,
+              "  ",
+              this.props.createdAtDay
+            )
           )
         )
       );
@@ -434,21 +528,42 @@ var SubmissionListing = function SubmissionListing(props) {
 };
 
 {/*Stateless*/}
-var ListHeading = function ListHeading(props) {
-  return React.createElement(
-    "div",
-    { className: "m-1" },
-    React.createElement(
-      "span",
-      { className: "h5 font-weight-light" },
-      props.leftColTitle
-    ),
-    React.createElement(
-      "span",
-      { className: "h5 float-right font-weight-light" },
-      props.rightColTitle
-    )
-  );
+var PageButtons = function PageButtons(props) {
+  if (props.currentDisplay == "OPEN") {
+    return React.createElement(
+      "div",
+      { className: "row mt-2 text-center page-buttons" },
+      React.createElement(
+        "button",
+        { className: "btn btn-light pageButtons col-md-6 bg-light-purp", onClick: props.pageBackwardOpen },
+        React.createElement("i", { className: "fa fa-angle-double-left" }),
+        "Back"
+      ),
+      React.createElement(
+        "button",
+        { className: "btn btn-light pageButtons col-md-6 bg-light-purp", onClick: props.pageForwardOpen },
+        "Next",
+        React.createElement("i", { className: "fa fa-angle-double-right" })
+      )
+    );
+  } else {
+    return React.createElement(
+      "div",
+      { className: "mt-2 text-center page-buttons" },
+      React.createElement(
+        "button",
+        { className: "btn btn-light pageButtons col-md-6 bg-light-purp", onClick: props.pageBackwardClosed },
+        React.createElement("i", { className: "fa fa-angle-double-left" }),
+        "Back"
+      ),
+      React.createElement(
+        "button",
+        { className: "btn btn-light pageButtons col-md-6 bg-light-purp", onClick: props.pageForwardClosed },
+        "Next",
+        React.createElement("i", { className: "fa fa-angle-double-right" })
+      )
+    );
+  }
 };
 
 {/*Stateless*/}
@@ -463,15 +578,11 @@ var PageHeading = function PageHeading(props) {
 var ThreadsList = function ThreadsList(props) {
   return React.createElement(
     "div",
-    { className: "container col-md-9" },
+    { className: "avenir" },
     React.createElement(PageHeading, { heading: props.title }),
     React.createElement(
       "div",
       { className: "threadsList" },
-      React.createElement(ListHeading, {
-        leftColTitle: props.leftColTitle,
-        rightColTitle: props.rightColTitle
-      }),
       props.submissions.map(function (submission) {
         return React.createElement(SubmissionListing, {
           key: submission._id.toString(),
@@ -484,7 +595,10 @@ var ThreadsList = function ThreadsList(props) {
           key: thread._id.toString(),
           latestEntry: thread.entries[0].entry,
           title: thread.title,
+          createdAtHour: thread.createdAt.slice(11, 19),
+          createdAtDay: thread.createdAt.slice(0, 10),
           entryCount: thread.entryCount,
+          maxEntries: thread.maxEntries,
           id: thread._id
         });
       })

@@ -5,7 +5,7 @@ block content
     .row
       .col-md-3
       .col-md-6.p-5.my-4.bg-light-purp.login-field.rounded
-        h1.mb-4.text-center.forms.font-weight-bold Sign Up
+        h1.mb-4.text-center.forms.font-weight-bold.avenir Sign Up
         //register form
         form(method='POST', action="/register")
           .form-group
@@ -27,6 +27,25 @@ block content
             label.inp(for='pw2')
               input.input#pw2(type='password' placeholder=" ", name='confirmPassword')
               span.label Confirm Password
-              span.border 
-          button.btn.btn-dark.btn-lg.btn-block.p-2.mt-5(type='submit') Sign up
+              span.border
+          .input-group
+            h4.my-5.avenir And select an avatar...
+            .btn-group-lg.btn-group-toggle.mx-auto(data-toggle="buttons")
+              label.i1.p-4.btn.btn-secondary.active
+                input(type="radio" name="options" id="treeAvatar" value="1" checked)
+              label.i2.p-4.btn.btn-secondary
+                input(type="radio" name="options" value="2" id="anchorAvatar")
+              label.i3.p-4.btn.btn-secondary
+                input(type="radio" name="options" value="3" id="ankhAvatar")
+              label.i4.p-4.btn.btn-secondary
+                input(type="radio" name="options" value="4" id="binocularsAvatar")
+              label.i5.p-4.btn.btn-secondary
+                input(type="radio" name="options" value="5" id="biohazardAvatar")
+              label.i6.p-4.btn.btn-secondary
+                input(type="radio" name="options" value="6" id="birthdayAvatar")
+              label.i7.p-4.btn.btn-secondary
+                input(type="radio" name="options" value="7" id="bongAvatar")
+              label.i8.p-4.btn.btn-secondary
+                input(type="radio" name="options" value="8" id="bookAvatar")
+          button.btn.btn-success.btn-lg.btn-block.p-2.mt-5(type='submit') Sign Up
       .col-md-3

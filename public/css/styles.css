@@ -10,6 +10,11 @@
   background-color: #D9D0F6;
 }
 
+.bg-light-blue {
+  background-color: #F3F9FE;
+}
+
+
 .bg-yellow {
   background-color: #FFB219;
 }
@@ -26,8 +31,79 @@
   color: #8866F4;
 }
 
+.profile-pic {
+  border: 2px solid black;
+  border-radius: 5px;
+  padding: 10px;
+}
+
 .newThreadInput {
   background-color: white;
+}
+
+.i1{
+  background-image: url("../res/avatar1.svg");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-color: #D9D0F6;
+  border: 0;
+}
+
+.i2{
+  background-image: url("../res/avatar2.svg");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-color: #D9D0F6;
+  border: 0;
+}
+
+.i3{
+  background-image: url("../res/avatar3.svg");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-color: #D9D0F6;
+  border: 0;
+}
+
+.i4{
+  background-image: url("../res/avatar4.svg");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-color: #D9D0F6;
+  border: 0;
+}
+
+.i5{
+  background-image: url("../res/avatar5.svg");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-color: #D9D0F6;
+  border: 0;
+}
+
+.i6{
+  background-image: url("../res/avatar6.svg");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-color: #D9D0F6;
+  border: 0;
+}
+
+.i7{
+  background-image: url("../res/avatar7.svg");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-color: #D9D0F6;
+  border: 0;
+}
+
+.i8{
+  background-image: url("../res/avatar8.svg");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-color: #D9D0F6;
+  border: 0;
+  fill: #fff;
 }
 
 .inp {
@@ -37,12 +113,13 @@
   max-width: 480px;
 }
 
+
 .label {
   position: absolute;
   top: 16px;
   left: 0;
   font-size: 16px;
-  color: #9098a9;
+  color: black;
   font-weight: 500;
   transform-origin: 0 0;
   transition: all 0.2s ease;
@@ -112,13 +189,20 @@
   margin-top: 200px;
 }
 
+.x {
+  min-height: 75vh;
+}
+
 .menu {
   border-radius: 0px 10px 0px 10px;
   background-color: #D9D0F6;
+  height: 100%;
 }
+
 .menu-divider {
   border: 1px solid grey;
 }
+
 .thread {
   background-color: #F6F4FE;
   border-radius: 0px 10px 0px 10px;
@@ -126,12 +210,30 @@
   text-align: left;
 }
 
-.entriesCount {
-  color: grey;
+.submission{
+  width: 100%;
+  text-align: left;
+}
+
+.pageButtons{
+  border-radius: 0px 0px 0px 0px;
+  border: 0px;
+}
+
+.pageButtons:hover{
+
+}
+
+.threadStats {
+  font-weight: bold;
 }
 
 .rulesText {
   font-size: 20px;
+}
+
+.page-buttons{
+  margin: 0px;
 }
 
 .thread:hover {
@@ -139,9 +241,25 @@
   border: 1px solid grey;
 }
 
+.profileContainer{
+  min-height: 60vh;
+  padding 10px;
+}
+
 .threadsList {
-  border-radius: 0px 10px 0px 10px;
+  border-radius: 0px 10px 0px 0px;
   background-color: #D9D0F6;
   font-family: Helvetica;
   padding: 10px;
+  min-height: 75vh;
+}
+
+.profileListing{
+  border: 1px solid black;
+
+}
+
+.footer {
+  height: 60px;
+  width: 100%;
 }

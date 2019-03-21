@@ -1,18 +1,24 @@
 extends layout
 
-block content 
+block content
   .container
-    .row.bg-light-purp.mx-5.rounded.py-5.my-5
-      .col-md-4
-        btn.btn.btn-warning.btn-block.btn-lg.thread Browse Threads
-        btn.btn.btn-warning.btn-block.btn-lg.thread Create A Thread
-        btn.btn.btn-warning.btn-block.btn-lg.thread Your Contributions
-        hr.bg-dark.my-5
-        a(href="/logout")
-          btn.btn.btn-dark.btn-block.btn-lg Logout
-      .col-md-6
-        h1 Profile
-        h1 #{currentUserName}
-        h1.lead Total Contributions: #{score}
+    .row.bg-light-purp.mx-5.rounded.p-3.my-5.x
+      .col-md-3
+        .container.mt-3
+          .container.bg-light.profile-pic
+            img(src='../static/res/avatar' + avatar + '.svg')
+          .h5.mt-3.avenir Contributions: #{score}
+          .h5.avenir Total Score: 0
+        a(href="/logout").text-decoration-none
+          btn.btn.btn-success.btn-block.btn-lg.mt-5 Logout
+        a(href="/logout").text-decoration-none
+          btn.btn.btn-light.btn-block.mt-2 Edit
+      .col-md-9
+        .container.p-0
+          .thread-title.font-weight-bold.avenir #{name}
+          .avenir
+            span.lead.text-secondary #{currentName}
+            span.lead.font-italic.ml-4 Joined 3-4-2019
+          #profileWidget
 
   

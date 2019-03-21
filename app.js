@@ -4,16 +4,20 @@ const session = require('express-session');
 
 const app = express();
 
+
+
 //HTTP Preflight and Headers
 app.use(function(req, res, next){
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  res.header('Access-Control-Allow-Credentials', true);
   if(req.method === "OPTIONS"){
     res.header("Access-Control-Allow-Methods", "PUT, POST, DELETE");
     return res.status(200).json({});
   }
   next();
 });
+
 
 //Allows sessions for tracking logins
 app.use(session({
@@ -30,10 +34,23 @@ app.use(function(req, res, next){
   next();
 });
 
+//Tracks session username
 app.use(function(req, res, next){
   res.locals.currentUserName = req.session.username;
   next();
-})
+});
+
+//Tracks current user avatar
+app.use(function(req, res, next){
+  res.locals.currentAvatarIcon = req.session.avatarIcon;
+  next();
+});
+
+//Tracks time since current user last tried to edit a thread.
+app.use(function(req, res, next){
+  res.locals.timeSinceLastContribution = req.session.timeSinceLastContribution;
+  next();
+});
 
 //Allows us to read json object from request body
 app.use(bodyParser.json());
@@ -85,6 +102,7 @@ db.once("open", function(){
 app.use(function(req, res, next) {
   let e = new Error("Not Found");
   e.status = 404;
+  res.render('notFound')
   next(e);
 });
 
