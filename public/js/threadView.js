@@ -50,7 +50,7 @@ var ThreadView = function (_Component) {
     value: function getStoryInfo() {
       var _this2 = this;
 
-      axios.get("http://" + window.location.hostname + ":3000" + window.location.pathname + "/data.json").then(function (response) {
+      axios.get("http://" + window.location.hostname + ":80" + window.location.pathname + "/data.json").then(function (response) {
 
         var userID = _this2.state.userID;
         var entriesList = response.data.entries;
@@ -111,7 +111,7 @@ var ThreadView = function (_Component) {
     value: function getCurrentUserInfo() {
       var _this3 = this;
 
-      axios.get("http://" + window.location.hostname + ":3000/profile.json").then(function (response) {
+      axios.get("http://" + window.location.hostname + ":80/profile.json").then(function (response) {
         _this3.setState({
           user: response.data.username,
           userID: response.data._id
@@ -140,7 +140,7 @@ var ThreadView = function (_Component) {
     key: "submitContribution",
     value: function submitContribution() {
       if (this.state.entriesLeft > 0) {
-        axios.post("http://localhost:3000/threads/" + this.state.threadID, {
+        axios.post("http://" + window.location.hostname + ":80/threads/" + this.state.threadID, {
           content: this.state.content
         }).then(function (response) {
           console.log(response);
@@ -153,7 +153,7 @@ var ThreadView = function (_Component) {
   }, {
     key: "voteOnSubmission",
     value: function voteOnSubmission(vote, submissionID) {
-      axios.post("http://localhost:3000/threads/" + this.state.threadID + "/entries/" + submissionID + "/" + vote).then(function (response) {
+      axios.post("http://" + window.location.hostname + ":80/threads/" + this.state.threadID + "/entries/" + submissionID + "/" + vote).then(function (response) {
         console.log(response);
       }).catch(function (error) {
         console.log(error.request);
