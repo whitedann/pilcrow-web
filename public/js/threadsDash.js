@@ -44,7 +44,7 @@ var ThreadsWidget = function (_Component) {
     value: function getCurrentUserInfo() {
       var _this2 = this;
 
-      axios.get("http://" + window.location.hostname + ":80/profile.json").then(function (response) {
+      axios.get("http://" + window.location.hostname + ":3000/profile.json").then(function (response) {
         _this2.setState({
           user: response.data.username,
           userScore: response.data.contributionsCount
@@ -58,7 +58,7 @@ var ThreadsWidget = function (_Component) {
     value: function generateYourPastThreads() {
       var _this3 = this;
 
-      axios.get("http://" + window.location.hostname + ":80/profile.json").then(function (response) {
+      axios.get("http://" + window.location.hostname + ":3000/profile.json").then(function (response) {
         _this3.setState({
           submissions: response.data.contributions,
           threads: [],
@@ -78,7 +78,7 @@ var ThreadsWidget = function (_Component) {
     value: function generateClosedThreads() {
       var _this4 = this;
 
-      axios.get("http://" + window.location.hostname + ":80" + window.location.pathname + '/closed?page=' + this.state.currentPageClosed).then(function (response) {
+      axios.get("http://" + window.location.hostname + ":3000" + window.location.pathname + '/closed?page=' + this.state.currentPageClosed).then(function (response) {
         _this4.setState({
           threads: response.data,
           submissions: [],
@@ -103,7 +103,7 @@ var ThreadsWidget = function (_Component) {
     value: function generateOpenThreads() {
       var _this5 = this;
 
-      axios.get("http://" + window.location.hostname + ":80" + window.location.pathname + '/open?page=' + this.state.currentPageOpen).then(function (response) {
+      axios.get("http://" + window.location.hostname + ":3000" + window.location.pathname + '/open?page=' + this.state.currentPageOpen).then(function (response) {
         _this5.setState({
           threads: response.data,
           submissions: [],

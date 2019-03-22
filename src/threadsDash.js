@@ -27,7 +27,7 @@ class ThreadsWidget extends Component {
   }
 
   getCurrentUserInfo(){
-    axios.get("http://" + window.location.hostname + ":80/profile.json")
+    axios.get("http://" + window.location.hostname + ":3000/profile.json")
       .then(response => {
         this.setState({
           user: response.data.username,
@@ -40,7 +40,7 @@ class ThreadsWidget extends Component {
   }
 
   generateYourPastThreads(){
-    axios.get("http://" + window.location.hostname + ":80/profile.json")
+    axios.get("http://" + window.location.hostname + ":3000/profile.json")
       .then(response => {
         this.setState({
           submissions: response.data.contributions,
@@ -57,7 +57,7 @@ class ThreadsWidget extends Component {
   // For rendering list of incomplete threads.
   // Check threads.js for get method of /threads/closed.json
   generateClosedThreads(){
-      axios.get("http://" + window.location.hostname + ":80" + window.location.pathname + '/closed?page=' + this.state.currentPageClosed)
+      axios.get("http://" + window.location.hostname + ":3000" + window.location.pathname + '/closed?page=' + this.state.currentPageClosed)
         .then(response => {
           this.setState({
             threads: response.data,
@@ -80,7 +80,7 @@ class ThreadsWidget extends Component {
   // For rendering list of open threads
   // Check threads.js for get method of /threads/open.json
   generateOpenThreads(){
-    axios.get("http://" + window.location.hostname + ":80" + window.location.pathname + '/open?page=' + this.state.currentPageOpen)
+    axios.get("http://" + window.location.hostname + ":3000" + window.location.pathname + '/open?page=' + this.state.currentPageOpen)
       .then(response => {
         this.setState({
           threads: response.data,

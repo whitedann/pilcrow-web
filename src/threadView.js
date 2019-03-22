@@ -32,7 +32,7 @@ class ThreadView extends Component {
   }
 
   getStoryInfo(){
-    axios.get("http://" + window.location.hostname + ":80" + window.location.pathname + "/data.json").
+    axios.get("http://" + window.location.hostname + ":3000" + window.location.pathname + "/data.json").
       then(response => {
 
         let userID = this.state.userID;
@@ -94,7 +94,7 @@ class ThreadView extends Component {
   }
 
   getCurrentUserInfo(){
-    axios.get("http://" + window.location.hostname + ":80/profile.json")
+    axios.get("http://" + window.location.hostname + ":3000/profile.json")
       .then(response => {
         this.setState({
           user: response.data.username,
@@ -123,7 +123,7 @@ class ThreadView extends Component {
 
   submitContribution(){
     if(this.state.entriesLeft > 0){
-      axios.post("http://" + window.location.hostname + ":80/threads/" + this.state.threadID, {
+      axios.post("http://" + window.location.hostname + ":3000/threads/" + this.state.threadID, {
         content: this.state.content
       })
       .then(response => {
@@ -137,7 +137,7 @@ class ThreadView extends Component {
   }
 
   voteOnSubmission(vote, submissionID){
-    axios.post("http://" + window.location.hostname + ":80/threads/" + this.state.threadID + "/entries/" + submissionID + "/" + vote)
+    axios.post("http://" + window.location.hostname + ":3000/threads/" + this.state.threadID + "/entries/" + submissionID + "/" + vote)
     .then(response => {
       console.log(response);
     })

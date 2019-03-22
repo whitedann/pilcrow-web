@@ -116,7 +116,7 @@ app.use(function(e, req, res, next) {
   })
 })
 
-let port = process.env.PORT || 80;
+let port = process.env.PORT || 3000;
 
 app.listen(port, function() {
   console.log("Express is listening on port: ", port);
