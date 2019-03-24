@@ -10,10 +10,21 @@
   background-color: #D9D0F6;
 }
 
-.bg-light-blue {
-  background-color: #F3F9FE;
+.bg-very-light-purp {
+  background-color: #D59AF6;
 }
 
+.bg-light-blue {
+  background-color: #648FF3;
+}
+
+.handwritten {
+  font-family: 'Just Me Again Down Here', cursive;
+}
+
+.big-text {
+  font-size: 100px;
+}
 
 .bg-yellow {
   background-color: #FFB219;
