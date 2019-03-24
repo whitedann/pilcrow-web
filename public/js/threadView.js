@@ -318,7 +318,7 @@ var TimerPane = function (_Component2) {
           ),
           React.createElement(
             "h3",
-            { className: "avenir" },
+            { className: "handwritten" },
             "Time Remaining:"
           ),
           React.createElement(
@@ -359,7 +359,7 @@ var StoryPane = function (_Component3) {
           ),
           React.createElement(
             "h1",
-            { className: "avenir font-weight-bold" },
+            { className: "handwritten font-weight-bold" },
             this.props.title
           ),
           React.createElement(
@@ -416,7 +416,7 @@ var CompleteStory = function CompleteStory(props) {
       { className: "bg-light-purp p-3 rounded" },
       React.createElement(
         "h1",
-        { className: "avenir font-weight-bold" },
+        { className: "handwritten font-weight-bold" },
         props.title
       ),
       React.createElement(
@@ -507,7 +507,7 @@ var Submission = function (_Component4) {
             { className: "row px-3" },
             React.createElement(
               "div",
-              { className: "p avenir col-md-10 text-center py-3" },
+              { className: "p handwritten col-md-10 text-center py-3" },
               this.props.content
             ),
             React.createElement(
@@ -539,7 +539,7 @@ var Submission = function (_Component4) {
             { className: "row px-3" },
             React.createElement(
               "div",
-              { className: "p avenir col-md-10 text-center py-3" },
+              { className: "p handwritten col-md-10 text-center py-3" },
               this.props.content
             ),
             React.createElement(
@@ -581,7 +581,7 @@ var RulesPane = function RulesPane(props) {
       { className: "list-group rounded" },
       React.createElement(
         "li",
-        { className: "list-group-item avenir h3 text-center" },
+        { className: "list-group-item handwritten h3 text-center" },
         "Thread Info"
       ),
       React.createElement(

@@ -23,7 +23,12 @@
 }
 
 .handwritten {
-  font-family: 'Just Me Again Down Here', cursive;
+  font-family: 'Patrick Hand SC', cursive;
+}
+
+.text-formal {
+  font-family: 'Patrick Hand SC', cursive;
+  font-family: 'Nunito', sans-serif;
 }
 
 .big-text {

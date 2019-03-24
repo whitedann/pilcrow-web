@@ -257,7 +257,7 @@ class TimerPane extends Component {
       <div className="mb-2">
         <div className="bg-light-purp rounded p-3 text-center">
           <p>You have 60 seconds to continue the story.</p>
-          <h3 className="avenir">
+          <h3 className="handwritten">
             Time Remaining:
           </h3>
           <h4 className="text-danger">
@@ -279,7 +279,7 @@ class StoryPane extends Component {
       <div className="col-md-8">
         <div className="bg-light-purp p-3 rounded">
           <h5 className="font-italic">You are submitting to...</h5>
-          <h1 className="avenir font-weight-bold">{this.props.title}</h1>
+          <h1 className="handwritten font-weight-bold">{this.props.title}</h1>
           <label className="mt-4 h5 font-weight-light">This thread is currently locked for your use for the next 60 seconds.</label>
           <label className="h5 font-weight-light">Hit the submit button to submit your entry to the thread.</label>
           <h5 className="font-wight-light mt-4">Last Entry</h5>
@@ -302,7 +302,7 @@ const CompleteStory = (props) => {
   return (
     <div className="col-md-12">
       <div className="bg-light-purp p-3 rounded">
-        <h1 className="avenir font-weight-bold">{props.title}</h1>
+        <h1 className="handwritten font-weight-bold">{props.title}</h1>
         <h5 className="font-italic">By: <span className="text-muted">user1, user2, user3, user4</span></h5>
         <h5 className="font-weight-bold mt-5">This thread is <span className="text-danger">closed</span> and you can now view all entries.</h5>
         <div className="bg-dark text-light font-italic rounded">
@@ -350,7 +350,7 @@ class Submission extends Component {
       return (
         <div className="btn-dark submission">
           <div className="row px-3">
-            <div className="p avenir col-md-10 text-center py-3">
+            <div className="p handwritten col-md-10 text-center py-3">
               {this.props.content}
             </div>
             <div className="col-md-2 text-center py-2 rounded">
@@ -364,7 +364,7 @@ class Submission extends Component {
       return (
         <div className="btn-dark submission">
           <div className="row px-3">
-            <div className="p avenir col-md-10 text-center py-3">
+            <div className="p handwritten col-md-10 text-center py-3">
               {this.props.content}
             </div>
             <div className="col-md-2 py-2">
@@ -384,7 +384,7 @@ const RulesPane = (props) => {
         timeLeft={props.timeLeft}
       />
       <ul className="list-group rounded">
-        <li className="list-group-item avenir h3 text-center">
+        <li className="list-group-item handwritten h3 text-center">
           Thread Info
         </li>
         <li className="list-group-item bg-light-purp">

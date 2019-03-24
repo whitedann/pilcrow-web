@@ -282,7 +282,7 @@ class NewPostForm extends Component {
               <div className="col-md-6"></div>
             </div>
             <div className="form-group">
-              <label className="aventir">Give the thread a title:</label>
+              <label className="handwritten">Give the thread a title:</label>
               <input className="form-control newThreadInput" onChange={this.handleTitleChange}></input>
             </div>
             <div className="form-group">
@@ -332,7 +332,7 @@ class ThreadListing extends Component {
     return (
         <a href={'/threads/' + this.props.id}>
           <button className="btn btn-light thread m-1 p-2">
-              <span className="p avenir font-weight-light">
+              <span className="p text-formal font-weight-light">
                 { this.props.title }
               </span>
               <span className="float-right">
@@ -392,7 +392,7 @@ const PageHeading = (props) => {
 
 const ThreadsList = (props) => {
     return (
-        <div className="avenir">
+        <div className="handwritten">
           <PageHeading heading={props.title}/>
           <div className="threadsList">
             {props.submissions.map( submission =>

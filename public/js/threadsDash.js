@@ -382,7 +382,7 @@ var NewPostForm = function (_Component2) {
               { className: "form-group" },
               React.createElement(
                 "label",
-                { className: "aventir" },
+                { className: "handwritten" },
                 "Give the thread a title:"
               ),
               React.createElement("input", { className: "form-control newThreadInput", onChange: this.handleTitleChange })
@@ -482,7 +482,7 @@ var ThreadListing = function (_Component3) {
           { className: "btn btn-light thread m-1 p-2" },
           React.createElement(
             "span",
-            { className: "p avenir font-weight-light" },
+            { className: "p text-formal font-weight-light" },
             this.props.title
           ),
           React.createElement(
@@ -578,7 +578,7 @@ var PageHeading = function PageHeading(props) {
 var ThreadsList = function ThreadsList(props) {
   return React.createElement(
     "div",
-    { className: "avenir" },
+    { className: "handwritten" },
     React.createElement(PageHeading, { heading: props.title }),
     React.createElement(
       "div",

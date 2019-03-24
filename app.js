@@ -102,7 +102,6 @@ db.once("open", function(){
 app.use(function(req, res, next) {
   let e = new Error("Not Found");
   e.status = 404;
-  res.render('notFound')
   next(e);
 });
 
