@@ -1,35 +1,42 @@
 extends layout
 
 block content
-  .jumbotron.bg-very-light-purp.text-center.my-3
-    .display-4.handwritten.big-text Write with Pilcrow!
-    blockquote.blockquote
-      .font-italic.quote.mt-5.mb-1 When you need to innovate, you need collaboration.
-      footer.mt-0.blockquote-footer.text-dark.font-italic Marissa Mayer
-    .lead.my-5 Pilcrow is a simple collaborative writing app.
-    .lead.mt-5 Take turns adding excerpts to a bigger story.
-    .lead.my-0 Read what others have created.
-    a(href="/register")
-      btn.btn.btn-lg.btn-primary.mt-5 Get Started Writing 
-    p.mt-2.font-italic (It's free!)
-  .row.mr-0.bg-light-blue.my-3
-    .col-md-5.m-auto
-      h1 Choose Your Starting Point
-      p.lead.mt-5 Select from a collection of different ongoing(open) threads. Once you've checked out a thread, you have control of the story. You can take the story in any direction you want. But there are some rules...
-      hr.mt-5
-    .col-md-5.m-auto.py-5
-      img(src="../static/res/demo.png" height="500").rounded
-  .row.mr-0.bg-light-purp.my-3
-    .col-md-5.m-auto.py-5
-      img(src="../static/res/demo2.png" height="400").rounded
-    .col-md-5.m-auto
-      h1 A Different Way Of Writing
-      .lead.mt-5 You can only see the most recently added sentence to the thread. Once a thread closes, you'll be able to read the whole thread. What will it say? Will it be a magical story of wizards and hobbits? A recipe for lemon blueberry pound cake? A dramtic retelling of the dead sea scrolls? Probably just nonsense.
-      hr.mt-5
-  .row.mr-0.bg-very-light-purp.my-3
-    .col-md-5.m-auto.py-5
-      h1 May The Best Writer Win
-      .lead.mt-5 Once there are no more entires, everyone can view the completed thread and vote on which contributions they liked or didn't like. The authors with the most likes show up on the leaderboard!
-      hr.mt-5
-    .col-md-5.m-auto.py-5
-      img(src="../static/res/demo3.png" height="400").rounded
+  .container.px-0
+    .jumbotron.bg-very-light-purp.text-center.mt-4
+      .display-4.handwritten.big-text Write with Pilcrow!
+      blockquote.blockquote
+        .font-italic.quote.mt-5.mb-1 When you need to innovate, you need collaboration.
+        footer.mt-0.blockquote-footer.text-dark.font-italic Marissa Mayer
+        .lead.my-5 Pilcrow is a simple collaborative writing app.
+        .lead.mt-5 Take turns adding excerpts to a bigger story.
+        .lead.my-0 Read what others have created.
+      a(href="/register")
+        btn.btn.btn-lg.btn-success.mt-5 Get Started With Pilcrow
+      p.mt-2.font-italic (It's free!)
+  .container
+    .jumbotron.row.bg-light-blue
+      .col-md-5.m-auto
+        .display-4.handwritten.text-center Choose Your Starting Point
+        hr.mt-5
+        .lead.mt-5 Select from a collection of different ongoing(open) threads. Once you've checked out a thread, you have control of the story. You can take the story in any direction you want. But there are some rules...
+        hr.mt-5
+      .col-md-5.m-auto  
+        img(src="../static/res/demo111.png").rounded.img-fluid
+  .container
+    .jumbotron.row.bg-light-purp
+      .col-md-6.my-auto
+        img(src="../static/res/rdemo2.png").rounded.img-fluid
+      .col-md-4.mx-auto
+        .display-4.handwritten.text-center How Will You Contribute?
+        hr.mt-5
+        .lead.mt-5 Whoever starts the thread decides how long each entry can be, and how long you have to write. If you take too long, your submission will be lost! On top of that, you can only see the most recently added sentence to the thread. 
+        hr.mt-5
+  .container
+    .jumbotron.row.bg-very-light-purp
+      .col-md-5.m-auto
+        .display-4.handwritten.text-center May The Best Writer Win
+        hr.mt-5
+        .lead.mt-5 Once there are no more entires, everyone can view the completed thread and vote on which contributions they liked or didn't like. The authors with the most likes show up on the leaderboard!
+        hr.mt-5
+      .col-md-5.m-auto
+        img(src="../static/res/rdemo3.png").rounded.img-fluid

@@ -6,16 +6,20 @@
   background-color: #8866F4;
 }
 
+.body1 {
+  background-image: url("../res/swirl.png");
+}
+
 .bg-light-purp {
   background-color: #D9D0F6;
 }
 
 .bg-very-light-purp {
-  background-color: #D59AF6;
+  background-color: #B5A0F7;
 }
 
 .bg-light-blue {
-  background-color: #648FF3;
+  background-color: #9FB9F6;
 }
 
 .handwritten {
