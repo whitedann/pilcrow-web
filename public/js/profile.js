@@ -82,7 +82,7 @@ var ProfileWidget = function (_Component) {
           { className: "profileContainer mt-3" },
           React.createElement(
             "h3",
-            { className: "avenir" },
+            { className: "text-formal" },
             "Recent Contributions"
           ),
           this.state.currentSelectionOfContributions.map(function (cont) {
@@ -116,7 +116,7 @@ var ProfileWidget = function (_Component) {
           { className: "profileContainer mt-3" },
           React.createElement(
             "h3",
-            { className: "avenir" },
+            { className: "text-formal" },
             "Recent Contributions"
           ),
           this.state.currentSelectionOfContributions.map(function (cont) {
@@ -140,7 +140,7 @@ var ProfileWidget = function (_Component) {
 var Contribution = function Contribution(props) {
   return React.createElement(
     "div",
-    { className: "bg-light-blue rounded p-2 my-2 profileListing" },
+    { className: "bg-light rounded p-2 my-2 profileListing" },
     React.createElement(
       "p",
       { className: "font-italic text-secondary" },

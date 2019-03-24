@@ -58,7 +58,7 @@ class ProfileWidget extends Component{
     if(this.state.showNextPageButton){
       return (
         <div className="profileContainer mt-3">
-          <h3 className="avenir">Recent Contributions</h3>
+          <h3 className="text-formal">Recent Contributions</h3>
           {this.state.currentSelectionOfContributions.map( cont =>
             <Contribution
               key={cont._id.toString()}
@@ -82,7 +82,7 @@ class ProfileWidget extends Component{
     else{
       return (
         <div className="profileContainer mt-3">
-          <h3 className="avenir">Recent Contributions</h3>
+          <h3 className="text-formal">Recent Contributions</h3>
           {this.state.currentSelectionOfContributions.map( cont =>
             <Contribution
               key={cont._id.toString()}
@@ -101,7 +101,7 @@ class ProfileWidget extends Component{
 
 const Contribution = (props) => {
   return (
-    <div className="bg-light-blue rounded p-2 my-2 profileListing">
+    <div className="bg-light rounded p-2 my-2 profileListing">
       <p className="font-italic text-secondary">Submitted on {props.date.slice(11,19)} {props.date.slice(0,10)}</p>
       <p>{props.content}</p>
       <div className="text-secondary">

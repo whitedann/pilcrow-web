@@ -109,10 +109,16 @@ app.use(function(req, res, next) {
 app.use(function(e, req, res, next) {
   //Status 500: Server error
   res.status(e.status || 500);
+
+  if(e.staus = 404){
+    res.render('notFound');
+  }
+  else {
   //send error to user as json
-  res.json({
-    error: e.message
-  })
+    res.json({
+      error: e.message
+    });
+  }
 })
 
 let port = process.env.PORT || 3000;
